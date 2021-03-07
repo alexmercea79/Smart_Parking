@@ -1,5 +1,6 @@
 # Mercea Alex-Ovidiu
 import os.path
+import subprocess
 import sys
 import pafy
 import yaml
@@ -11,16 +12,15 @@ from twilio.rest import Client
 from flask import Flask, request, redirect
 from twilio.twiml.messaging_response import MessagingResponse
 import time
-
-
 # Path
 
-fn = "testvideo_03.mp4"  # 3
+
+fn = "videos/testvideo_03.mp4"  # 3
 # fn = " "
 # fn = " "
 # fn_yaml = "yml_youtube.yml"
 fn_out = "outputvideo_01.avi"
-cascade_src = 'classifier_02.xml'
+cascade_src = 'classifiers/classifier_02.xml'
 car_cascade = cv2.CascadeClassifier(cascade_src)
 global_str = "Ultima schimbare: "
 change_pos = 0.00
@@ -51,25 +51,25 @@ twilio_source_phone_number = '+13853044103'
 client = Client(twilio_account_sid, twilio_auth_token)
 sms_sent = False
 
-
 url = input("Please insert the video link:\n")
 if_draw = input("Do you want to set up your parking lot? (y/n)")
 
 print(url)
-alabala = url.split("https://www.youtube.com/watch?v=")
-print(alabala)
+splitter = url.split("https://www.youtube.com/watch?v=")
+print(splitter)
 video = pafy.new(url)
-fn_yaml = alabala[1]+".yml"
+fn_yaml = splitter[1] + ".yml"
 print(fn_yaml)
-best  = video.getbest(preftype="mp4")
+best = video.getbest(preftype="mp4")
 
 refPt = []
-def draw():
 
+
+def draw():
     cropping = False
     data = []
-    file_path = fn_yaml
-    img = cv2.imread('frame_3.jpg')
+    file_path = "ymls/" + fn_yaml
+    img = cv2.imread('images/' + 'frame_3.jpg')
 
     file = open(file_path, "r+")
     file.truncate(0)
@@ -96,13 +96,13 @@ def draw():
             refPt.append((x, y))
             cropping = False
         if len(refPt) == 4:
-            if data == []:
-                if yaml_loader(file_path) != None:
+            if not data:
+                if yaml_loader(file_path) is not None:
                     data_already = len(yaml_loader(file_path))
                 else:
                     data_already = 0
             else:
-                if yaml_loader(file_path) != None:
+                if yaml_loader(file_path) is not None:
                     data_already = len(data) + len(yaml_loader(file_path))
                 else:
                     data_already = len(data)
@@ -123,14 +123,11 @@ def draw():
             # data_already+=1
             refPt = []
 
-
     image = cv2.resize(img, None, fx=0.6, fy=0.6)
     clone = image.copy()
     cv2.namedWindow("Dublu click pentru a marca punctul si ESC pentru a iesi")
     cv2.imshow("Dublu click pentru a marca punctul si ESC pentru a iesi", image)
     cv2.setMouseCallback("Dublu click pentru a marca punctul si ESC pentru a iesi", click_and_crop)
-
-
 
     # loop pana apasare tasta q
     while True:
@@ -146,32 +143,16 @@ def draw():
     cv2.destroyAllWindows()  # important pentru a nu da crash
 
 
-
-
-
-
-if os.path.exists(fn_yaml):
+if os.path.exists("ymls/" + fn_yaml):
     pass
 else:
-    file = open(fn_yaml, 'w')
+    file = open("ymls/" + fn_yaml, 'w')
     file.close()
 
 if if_draw == 'n':
     pass
 else:
     draw()
-
-
-
-
-
-
-
-
-
-
-
-
 
 # proprietatile videoclipului
 cap = cv2.VideoCapture(best.url)
@@ -198,7 +179,8 @@ def run_classifier(img, id):
 # codec si VideoWriter
 if dict['save_video']:
     fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I',
-                                    'D')  # optiuni: ('P','I','M','1'), ('D','I','V','X'), ('M','J','P','G'), ('X','V','I','D')
+                                    'D')  # optiuni: ('P','I','M','1'), ('D','I','V','X'), ('M','J','P','G'), ('X',
+    # 'V','I','D')
     out = cv2.VideoWriter(fn_out, -1, 25.0, (video_info['width'], video_info['height']))
 
 # detector de persoane
@@ -211,13 +193,13 @@ if dict['motion_detection']:
     fgbg = cv2.createBackgroundSubtractorMOG2(history=300, varThreshold=16, detectShadows=True)
 
 # citeste yaml
-with open(fn_yaml, 'r') as stream:
+with open("ymls/" + fn_yaml, 'r') as stream:
     parking_data = yaml.load(stream)
 parking_contours = []
 parking_bounding_rects = []
 parking_mask = []
 parking_data_motion = []
-if parking_data != None:
+if parking_data is not None:
     for park in parking_data:
         points = np.array(park['points'])
         rect = cv2.boundingRect(points)
@@ -233,7 +215,7 @@ if parking_data != None:
 
 kernel_erode = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))  # morphological kernel
 kernel_dilate = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 19))
-if parking_data != None:
+if parking_data is not None:
     parking_status = [False] * len(parking_data)
     parking_buffer = [None] * len(parking_data)
 
@@ -338,26 +320,23 @@ while cap.isOpened():
     # schimbare culoare
     if dict['parking_overlay']:
         number = 0
-        #print(str(park['id']))
+        # print(str(park['id']))
 
-        #id_bool = [0] * 200
-        #id_values = [0] * 200
-
-
-
+        # id_bool = [0] * 200
+        # id_values = [0] * 200
 
         for ind, park in enumerate(parking_data):
             points = np.array(park['points'])
-            #nr = park['id']
-            #print(nr)
-            #for i in range(nr):
-               # id_values[i] = i
+            # nr = park['id']
+            # print(nr)
+            # for i in range(nr):
+            # id_values[i] = i
 
             if parking_status[ind]:
                 color = (0, 255, 0)
-                #print(park['id'])
-                #id_bool[park['id']] = 1
-                #print(id_bool)
+                # print(park['id'])
+                # id_bool[park['id']] = 1
+                # print(id_bool)
                 number = number + 1
                 number_sms = number
                 rect = parking_bounding_rects[ind]
@@ -369,21 +348,21 @@ while cap.isOpened():
                     parking_data_motion.append(parking_data[ind])
                     # del parking_data[ind]
                     color = (0, 0, 255)
-                    #id_bool[park['id']] = 0
+                    # id_bool[park['id']] = 0
             else:
                 color = (0, 0, 255)
-                #id_bool[park['id']] = 0
+                # id_bool[park['id']] = 0
 
             cv2.drawContours(frame_out, [points], contourIdx=-1,
                              color=color, thickness=2, lineType=cv2.LINE_8)
             if dict['show_ids']:
                 print_parkIDs(park, points, frame_out)
-            #print(id_values[0], ' ', id_bool[0])
-           # f = open("values.txt", "w")
-            #for i in range(nr):
-                #f.write(str(id_values[i])+' '+str(id_bool[i])+ '\n')
-            #f.close()
-    if parking_data_motion != []:
+            # print(id_values[0], ' ', id_bool[0])
+        # f = open("values.txt", "w")
+        # for i in range(nr):
+        # f.write(str(id_values[i])+' '+str(id_bool[i])+ '\n')
+        # f.close()
+    if parking_data_motion:
         for index, park_coord in enumerate(parking_data_motion):
             points = np.array(park_coord['points'])
             color = (0, 0, 255)
