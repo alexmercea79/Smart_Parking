@@ -12,6 +12,9 @@ from twilio.rest import Client
 from flask import Flask, request, redirect
 from twilio.twiml.messaging_response import MessagingResponse
 import time
+
+from numba import jit, cuda
+
 # Path
 
 
@@ -65,11 +68,21 @@ best = video.getbest(preftype="mp4")
 refPt = []
 
 
+def capture_frame(videofile):
+    vidcap = cv2.VideoCapture(videofile)
+    success, image = vidcap.read()
+    if success:
+        cv2.imwrite("images/" + splitter[1] + ".jpg", image)
+
+
+capture_frame(best.url)
+
+
 def draw():
     cropping = False
     data = []
     file_path = "ymls/" + fn_yaml
-    img = cv2.imread('images/' + 'frame_3.jpg')
+    img = cv2.imread('images/' + splitter[1] + ".jpg")
 
     file = open(file_path, "r+")
     file.truncate(0)
@@ -77,7 +90,7 @@ def draw():
 
     def yaml_loader(file_path):
         with open(file_path, "r") as file_descr:
-            data = yaml.load(file_descr)
+            data = yaml.load(file_descr, Loader=yaml.FullLoader)
 
             return data
 
@@ -169,10 +182,11 @@ cap.set(cv2.CAP_PROP_POS_FRAMES, dict['start_frame'])  # start numarul de frameu
 def run_classifier(img, id):
     # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     cars = car_cascade.detectMultiScale(img, 1.1, 1)
-    if cars == ():
+    if cars is ():
         return False
     else:
         parking_status[id] = False
+        # print(parking_status[id])
         return True
 
 
@@ -193,12 +207,18 @@ if dict['motion_detection']:
     fgbg = cv2.createBackgroundSubtractorMOG2(history=300, varThreshold=16, detectShadows=True)
 
 # citeste yaml
+
 with open("ymls/" + fn_yaml, 'r') as stream:
-    parking_data = yaml.load(stream)
+    parking_data = yaml.load(stream, Loader=yaml.FullLoader)
+    if parking_data is None:
+        print("Niciun loc de parcare inregistrat. Va rugam marcati fiecare loc de parcare!")
+        draw()
+        parking_data = yaml.load(stream, Loader=yaml.FullLoader)
 parking_contours = []
 parking_bounding_rects = []
 parking_mask = []
 parking_data_motion = []
+
 if parking_data is not None:
     for park in parking_data:
         points = np.array(park['points'])
@@ -363,7 +383,9 @@ while cap.isOpened():
         # f.write(str(id_values[i])+' '+str(id_bool[i])+ '\n')
         # f.close()
     if parking_data_motion:
+
         for index, park_coord in enumerate(parking_data_motion):
+
             points = np.array(park_coord['points'])
             color = (0, 0, 255)
             recta = parking_bounding_rects[ind]
@@ -399,6 +421,7 @@ while cap.isOpened():
                     color = (0, 255, 0)
 
             classifier_result1 = run_classifier(roi_gray1, index)
+
             if classifier_result1:
                 # print(classifier_result1)
                 color = (0, 0, 255)  # rosu daca e masina
