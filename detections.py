@@ -1,4 +1,6 @@
-refPt=[]
+from datetime import time
+
+refPt = []
 
 
 def draw():
@@ -81,7 +83,6 @@ def draw():
     cv2.destroyAllWindows()  # important pentru a nu da crash
 
 
-
 def detections_working(url):
     global car_cascade, splitter, fn_yaml, parking_status
     # Mercea Alex-Ovidiu
@@ -145,8 +146,10 @@ def detections_working(url):
 
     if not os.path.exists("ymls"):
         os.mkdir('ymls')
+        time.sleep(0.1)
     if not os.path.exists("images"):
         os.mkdir('images')
+        time.sleep(0.1)
 
 
     if os.path.exists("ymls/" + fn_yaml):
@@ -196,8 +199,6 @@ def detections_working(url):
         parking_data = yaml.load(stream, Loader=yaml.FullLoader)
         if parking_data is None:
             print("Niciun loc de parcare inregistrat. Va rugam marcati fiecare loc de parcare!")
-
-
 
             draw()
             parking_data = yaml.load(stream, Loader=yaml.FullLoader)
@@ -457,6 +458,5 @@ def detections_working(url):
     cap.release()
     if dict['save_video']: out.release()
     cv2.destroyAllWindows()
-
 
 # detections_working()
