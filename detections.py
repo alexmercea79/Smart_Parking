@@ -1,4 +1,5 @@
 from datetime import time
+import re
 
 refPt = []
 
@@ -129,12 +130,17 @@ def detections_working(url):
     if_draw = 'n'
     print(url)
     splitter = url.split("https://www.youtube.com/watch?v=")
-    print(splitter)
+    y = re.search('t=[1-9]+[a-z]*&', splitter[1])
+    print(splitter[1])
+    print('y= '+str(y))
+    if y is not None:
+        y = re.findall('t=[1-9]+[a-z]*&', splitter[1])
+        splitter[1] = splitter[1].replace(str(y[0]), '')
     video = pafy.new(url)
     fn_yaml = splitter[1] + ".yml"
     print(fn_yaml)
     best = video.getbest(preftype="mp4")
-    refPt = []
+    # refPt = []
 
     def capture_frame(videofile):
         vidcap = cv2.VideoCapture(videofile)
@@ -146,10 +152,8 @@ def detections_working(url):
 
     if not os.path.exists("ymls"):
         os.mkdir('ymls')
-        time.sleep(0.1)
     if not os.path.exists("images"):
         os.mkdir('images')
-        time.sleep(0.1)
 
     if os.path.exists("ymls/" + fn_yaml):
         pass
@@ -458,4 +462,3 @@ def detections_working(url):
     if dict['save_video']: out.release()
     cv2.destroyAllWindows()
 
-# detections_working()

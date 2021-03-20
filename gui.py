@@ -46,9 +46,6 @@ def retrieve_input(text):
 
     detections.detections_working(text)
 
-    # label = tk.Label(self, text="This is page 1")
-    # label.pack(side="top", fill="both", expand=True)
-
 
 def drawing():
     import detections
