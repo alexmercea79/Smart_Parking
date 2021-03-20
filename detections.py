@@ -78,7 +78,7 @@ def draw():
             break
 
     # date in yaml
-    if data != []:
+    if data:
         yaml_dump(file_path, data)
     cv2.destroyAllWindows()  # important pentru a nu da crash
 
@@ -150,7 +150,6 @@ def detections_working(url):
     if not os.path.exists("images"):
         os.mkdir('images')
         time.sleep(0.1)
-
 
     if os.path.exists("ymls/" + fn_yaml):
         pass

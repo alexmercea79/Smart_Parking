@@ -11,28 +11,37 @@ class Page(tk.Frame):
         self.lift()
 
 
-def threading_local_server():
+def threading_local_server(lbl, lbl2):
     # Call work function
+    lbl.config(text="SERVER STATUS: Online", bg='green')
+    lbl2.config(bg='green', state='disabled', disabledforeground="black", text='Serverul este pornit')
     t1 = Thread(target=start_local_server)
     t1.start()
 
 
-
-
-
 def start_local_server():
     import LocalServer
-    webbrowser.open('http://127.0.0.1:5000/sms', new=1)
+    webbrowser.open('http://127.0.0.1:5000/sms', new=2)
+
     LocalServer.run_app()
 
 
-def threading_detections(text):
-    t2 = Thread(target=retrieve_input(text))
-    t2.start()
+def threading_detections(text, lbl, lbl2):
+    x = text.split("https://www.youtube.com/watch?v=")
+    if x[0] is '' and len(x) is 2:
+        lbl.config(text='Linkul introdus este corect!', bg='green')
+        lbl2.config(text='')
+        t2 = Thread(target=retrieve_input, kwargs=dict(text=text))
+        t2.start()
+
+
+    else:
+        lbl.config(text='Linkul introdus este incorect!', bg='red')
+        lbl2.config(text='Sugestie: Adaugati URL-ul complet al videoclipului!')
 
 
 def retrieve_input(text):
-    print(text)
+    print('text= ' + text)
     import detections
 
     detections.detections_working(text)
@@ -42,7 +51,6 @@ def retrieve_input(text):
 
 
 def drawing():
-    print()
     import detections
 
     detections.draw()
@@ -53,39 +61,63 @@ def drawing():
 
 class Page1(Page):
     def __init__(self, *args, **kwargs):
-
         Page.__init__(self, *args, **kwargs)
-        self.label11 = tk.Label(self)
-        self.label11.grid(row=1, column=2, sticky='w')
-        self.label11.config(height=1, width=100)
-        self.label = tk.Label(self, text='Introduceti linkul camerei de supravegheat:')
-        self.label.grid(row=2, column=2,padx=(0, 320))
-        # self.label.config(height=1, width=50)
+        self.photo_bg = tk.PhotoImage(file="smart_parking_long.PNG")
+        self.background_photo = tk.Label(self, image=self.photo_bg)
+        self.background_photo.place(x=70, y=450)
 
+        self.label_delimitare1 = tk.Label(self)
+        self.label_delimitare1.grid(row=1, column=2, sticky='w')
+        self.label_delimitare1.config(height=2, width=100)
 
-        self.text = tk.Text(self, height=1, width=60)
-        self.text.grid(row=3, column=2)
-        self.bg = tk.PhotoImage(file="smart_parking_long.PNG")
-        self.label23 = tk.Label(self, image=self.bg)
-        self.label23.place(x = 70, y = 300)
-        self.button = tk.Button(self, text='Click Here To Start',
-                                command=lambda: threading_detections(self.text.get("1.0", "end-1c")))
-        self.button.config(height=5, width=30)
-        self.button.grid(row=4, column=2)
-        self.label111 = tk.Label(self)
-        self.label111.grid(row=5, column=2, sticky='w')
-        self.label111.config(height=4, width=100)
-        self.button2 = tk.Button(self, text='Apasati aici pentru a porni Serverul',
-                                 command=threading_local_server)
-        self.button2.grid(row=5, column=2)
-        self.button3 = tk.Button(self, text='Iesire Program',
-                                 command=root.destroy)
-        self.button3.grid(row=6, column=2)
-        self.label2 = tk.Label(self, text='')
-        self.label2.grid(row=7, column=2)
-        self.button3 = tk.Button(self, text='Apasati aici pentru a realiza din nou schema de parcare',
-                                 command=drawing)
-        self.button3.grid(row=8, column=2)
+        self.label_server_status = tk.Label(self, text='SERVER STATUS: Offline', bg='red')
+        self.label_server_status.grid(row=0, column=2, sticky='w')
+        self.label_server_status.config(font=("Helvetica", 12), padx='10', justify='left')
+
+        self.label2 = tk.Label(self, text='Porniti serverul pentru a putea primi mesaje pe telefonul mobil')
+        self.label2.grid(row=2, column=2)
+        self.label2.config(font=("Helvetica", 12))
+
+        self.label_delimitare2 = tk.Label(self)
+        self.label_delimitare2.grid(row=4, column=2, sticky='w')
+        self.label_delimitare2.config(height=2, width=100)
+
+        self.button_start_server = tk.Button(self, text='Start Server',
+                                             command=lambda: threading_local_server(self.label_server_status,
+                                                                                    self.button_start_server))
+        self.button_start_server.grid(row=3, column=2)
+        self.button_start_server.config(bg='red', font=("Helvetica", 12), height=1, width=30, )
+
+        self.label_text = tk.Label(self, text='Introduceti linkul camerei de supravegheat:')
+        self.label_text.grid(row=4, column=2, padx=(0, 292))
+        self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
+
+        self.text_box = tk.Text(self, height=1, width=60)
+        self.text_box.grid(row=5, column=2)
+        self.text_box.config(font=("Helvetica", 12))
+
+        self.button_start = tk.Button(self, text='Click Here To Start',
+                                      command=lambda: threading_detections(self.text_box.get("1.0", "end-1c"),
+                                                                           self.error_message, self.hint_message)
+                                      )
+        self.button_start.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
+        self.button_start.grid(row=6, column=2)
+
+        self.error_message = tk.Label(self, text='')
+        self.error_message.grid(row=7, column=2)
+        self.error_message.config(font=("Helvetica", 12), padx='10')
+
+        self.hint_message = tk.Label(self, text='')
+        self.hint_message.grid(row=8, column=2)
+        self.hint_message.config(font=("Helvetica", 12), padx='10')
+
+        self.button_rerun_schema = tk.Button(self, text='Schema de parcare noua', command=drawing, bg='gray')
+        self.button_rerun_schema.grid(row=9, column=2)
+        self.button_rerun_schema.config(font=("Helvetica", 12), height=1, width=30)
+
+        self.button_iesire_program = tk.Button(self, text='Iesire Program', command=root.destroy)
+        self.button_iesire_program.config(height=1, width=30, font=("Helvetica", 12))
+        self.button_iesire_program.grid(row=10, column=2)
 
 
 class Page2(Page):
@@ -131,9 +163,11 @@ class MainView(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
+
     root.iconbitmap('smart_parking_short.ico')
     root.title('Smart Parking')
+
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("800x600")
+    root.wm_geometry("800x800")
     root.mainloop()
