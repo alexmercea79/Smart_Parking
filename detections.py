@@ -84,7 +84,22 @@ def draw():
     cv2.destroyAllWindows()  # important pentru a nu da crash
 
 
+l = []
+
+
+def threading_working(url):
+    from multiprocessing import Process
+
+    v = Process(target=detections_working, kwargs=dict(url=url))
+    l.append(v)
+    print('marimea listei= ' + str(len(l)))
+    for x in range(len(l) - 1, len(l)):
+        l[x].start()
+    print('marimea listei= ' + str(len(l)))
+
+
 def detections_working(url):
+    print('dasdasdasurllll= ' + url)
     global car_cascade, splitter, fn_yaml, parking_status
     # Mercea Alex-Ovidiu
     import os.path
@@ -120,9 +135,9 @@ def detections_working(url):
         'save_video': False
     }
     # Twilio
-    twilio_account_sid = 'ACa6df512b91444e4345d1a14f2e2e1645'
-    twilio_auth_token = '816de7cec503bc2ce716789ec02d2cbc'
-    twilio_source_phone_number = '+13853044103'
+    twilio_account_sid = 'ACba5d30214587018d4515ceed82e8555b'
+    twilio_auth_token = '34131bd4a8e0c173866ff325599faad6'
+    twilio_source_phone_number = 'whatsapp:+14155238886'
     # client Twilio
     client = Client(twilio_account_sid, twilio_auth_token)
     sms_sent = False
@@ -132,7 +147,7 @@ def detections_working(url):
     splitter = url.split("https://www.youtube.com/watch?v=")
     y = re.search('t=[1-9]+[a-z]*&', splitter[1])
     print(splitter[1])
-    print('y= '+str(y))
+    print('y= ' + str(y))
     if y is not None:
         y = re.findall('t=[1-9]+[a-z]*&', splitter[1])
         splitter[1] = splitter[1].replace(str(y[0]), '')
@@ -140,6 +155,7 @@ def detections_working(url):
     fn_yaml = splitter[1] + ".yml"
     print(fn_yaml)
     best = video.getbest(preftype="mp4")
+
     # refPt = []
 
     def capture_frame(videofile):
@@ -431,11 +447,11 @@ def detections_working(url):
             #         if video_cur_frame % 35 == 0: # take every 30 frames
             out.write(frame_out)
 
-        f = open("number.txt", "w")
+        f = open("free_spaces_cameras/"+splitter[1]+"_spaces.txt", "w")
         f.write(str(number))
         f.close()
         # video
-        cv2.imshow('frame', frame_out)
+        cv2.imshow('frame' + splitter[1], frame_out)
         # cv2.imshow('background mask', bw)
         k = cv2.waitKey(1)
         if k == ord('q'):
@@ -452,7 +468,7 @@ def detections_working(url):
                 message = client.messages.create(
                     body="Sunt " + str(number) + " locuri libere de parcare",
                     from_=twilio_source_phone_number,
-                    to="+40741213687"
+                    to="whatsapp:+40741213687"
                 )
                 sms_sent = True
         if cv2.waitKey(33) == 27:
@@ -461,4 +477,3 @@ def detections_working(url):
     cap.release()
     if dict['save_video']: out.release()
     cv2.destroyAllWindows()
-

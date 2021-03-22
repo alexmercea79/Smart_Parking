@@ -44,7 +44,7 @@ def retrieve_input(text):
     print('text= ' + text)
     import detections
 
-    detections.detections_working(text)
+    detections.threading_working(text)
 
 
 def drawing():

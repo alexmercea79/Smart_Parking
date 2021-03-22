@@ -6,10 +6,21 @@ app = Flask(__name__)
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_reply():
-    path = 'number.txt'
+    body = request.values.get('Body', None)
+    number =
+    path = 'free_spaces_cameras/'+number+'_spaces.txt'
     file = open(path, 'r')
     file_open = file.read()
     resp = MessagingResponse()
+
+
+    if body == 'hello':
+        resp.message("Hi!")
+    elif body == 'bye':
+        resp.message("Goodbye")
+
+
+    print('resp= '+str(resp))
     print(str(file_open))
     if str(file_open) == '1':
         resp.message("Este disponibil un singur loc de parcare! Grabeste-te!")
