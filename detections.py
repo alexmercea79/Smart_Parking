@@ -447,7 +447,7 @@ def detections_working(url):
             #         if video_cur_frame % 35 == 0: # take every 30 frames
             out.write(frame_out)
 
-        f = open("free_spaces_cameras/"+splitter[1]+"_spaces.txt", "w")
+        f = open("free_spaces_cameras/"+splitter[1]+".txt", "w")
         f.write(str(number))
         f.close()
         # video
