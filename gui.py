@@ -26,10 +26,22 @@ def start_local_server():
     LocalServer.run_app()
 
 
-def new_textBox(box, self=None):
-    self.box = tk.Text(self, height=1, width=60)
-    self.box.grid(row=5, column=2)
-    self.box.config(font=("Helvetica", 12))
+def add_link(lbl1,lbl2):
+    if lbl1 == '':
+        print('please add valid text')
+        lbl2.configure(text='Textul introdus este invalid',bg='red')
+    else:
+
+        lbl2.configure(text='Linkul introdus este corect',bg='green')
+        f = open('free_spaces_cameras/camere.txt','a')
+        print(lbl1)
+        f.write('\n'+lbl1)
+        f.close()
+        # f = open('free_spaces_cameras/camere.txt', 'r')
+        links.append(lbl1)
+
+
+
 
 
 def threading_detections(text, lbl, lbl2):
@@ -61,11 +73,15 @@ def drawing():
     # label = tk.Label(self, text="This is page 1")
     # label.pack(side="top", fill="both", expand=True)
 
-i=5
-j=6
-x=2
-list_text_box=[]
-list_label_text=[]
+
+i = 5
+j = 6
+x = 2
+list_text_box = []
+list_label_text = []
+links = []
+
+
 class Page1(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
@@ -102,8 +118,7 @@ class Page1(Page):
         self.text_box = tk.Text(self, height=1, width=60)
         self.text_box.grid(row=5, column=2)
         self.text_box.config(font=("Helvetica", 12))
-        x=3
-
+        x = 3
 
         # def create_button():
         #     global i
@@ -130,11 +145,6 @@ class Page1(Page):
         # self.scrollbar = tk.Scrollbar(root)
         # self.scrollbar.pack(side='right', fill='y')
 
-
-
-
-
-
         self.error_message = tk.Label(self, text='')
         self.error_message.grid(row=7, column=2)
         self.error_message.config(font=("Helvetica", 12), padx='10')
@@ -159,99 +169,125 @@ class Page2(Page):
         self.background_photo = tk.Label(self, image=self.photo_bg)
         self.background_photo.place(x=70, y=450)
 
-
-
-
-
-        self.label_text = tk.Label(self, text='Camera 1 '+ '(Introduceti linkul camerei de supravegheat)')
-        self.label_text.grid(row=4, column=2, padx=(0, 292))
+        self.label_text = tk.Label(self, text='Introduceti linkul camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
+        self.label_text.pack()
+
+        self.text_box1 = tk.Text(self, height=1, width=60)
+        self.text_box1.config(font=("Helvetica", 12))
+        self.text_box1.pack()
+
+        self.button_start = tk.Button(self, text='Click Here To Add',
+                                      command=lambda: add_link(self.text_box1.get("1.0", "end-1c"),self.label_text1)
+                                      )
+
+
+        # threading_detections(self.text_box.get("1.0", "end-1c"),
+        #                      self.error_message, self.hint_message)
+        global i
+        self.button_start.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
+        self.button_start.pack()
+
+        self.label_text1 = tk.Label(self, text='')
+        self.label_text1.config(font=("Helvetica", 12), padx='10', justify='left')
+        self.label_text1.pack()
+
+
+        self.label_text = tk.Label(self, text='Stergeti linkul')
+        self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
+        self.label_text.pack()
 
         self.text_box = tk.Text(self, height=1, width=60)
-        self.text_box.grid(row=5, column=2)
         self.text_box.config(font=("Helvetica", 12))
+        self.text_box.pack()
 
+        # def create_button():
+        #     global i,j,x,list_text_box,list_label_text
+        #
+        #     self.label_text = tk.Label(self, text='Camera '+str(x)+ '(Introduceti linkul camerei de supravegheat)')
+        #     self.label_text.grid(row=i, column=2, padx=(0, 292))
+        #     self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
+        #     i = i + 2
+        #     list_label_text.append(self.label_text)
+        #
+        #
+        #     self.text_box = tk.Text(self, height=1, width=60)
+        #     self.text_box.grid(row=j, column=2)
+        #     self.text_box.config(font=("Helvetica", 12))
+        #     list_text_box.append(self.text_box)
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        #
+        #     print(list_text_box)
+        #
+        #     j= j+2
+        #     print('i='+str(i))
+        #     print('j=' + str(j))
+        #     x+=1
 
+        # def destroy_element(lbl1,lbl2):
+        #     global x,list_text_box,list_label_text
+        #
+        #     lbl1.destroy()
+        #     lbl2.destroy()
+        #
+        #     list_label_text.pop()
+        #     list_text_box.pop()
+        #     print(list_text_box)
+        #     print(lbl1)
+        #
+        #     x-=1
 
-
-        def create_button():
-            global i,j,x,list_text_box,list_label_text
-
-            self.label_text = tk.Label(self, text='Camera '+str(x)+ '(Introduceti linkul camerei de supravegheat)')
-            self.label_text.grid(row=i, column=2, padx=(0, 292))
-            self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
-            i = i + 2
-            list_label_text.append(self.label_text)
-
-
-            self.text_box = tk.Text(self, height=1, width=60)
-            self.text_box.grid(row=j, column=2)
-            self.text_box.config(font=("Helvetica", 12))
-            list_text_box.append(self.text_box)
-
-
-
-
-
-
-
-
-            print(list_text_box)
-
-            j= j+2
-            print('i='+str(i))
-            print('j=' + str(j))
-            x+=1
-
-        def destroy_element(lbl1,lbl2):
-            global x,list_text_box,list_label_text
-
-            lbl1.destroy()
-            lbl2.destroy()
-
-            list_label_text.pop()
-            list_text_box.pop()
-            print(list_text_box)
-            print(lbl1)
-
-            x-=1
-
-
-
-        self.button_start = tk.Button(self, text='Click Here To Start',
+        self.button_start = tk.Button(self, text='Click Here To Remove',
                                       command=lambda: threading_detections(self.text_box.get("1.0", "end-1c"),
                                                                            self.error_message, self.hint_message)
                                       )
-        global i
+
+        f = open('free_spaces_cameras/camere.txt','r')
+        lines = f.readlines()
+        global links
+        for line in lines:
+            line = line.split(' = ')
+            links.append(line)
+        print(links)
+
+        for link in links:
+            self.text_label = tk.Label(self, width=60)
+            self.text_label.config(font=("Helvetica", 12),text=link[0]+' : '+link[1])
+            self.text_label.pack()
+
+
+
         self.button_start.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        self.button_start.grid(row=i+10, column=2)
+        self.button_start.pack()
 
-        self.button_start2 = tk.Button(self, text='New line',
-                                       command=create_button
-                                       )
-        self.button_start2.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        self.button_start2.grid(row=i+11, column=2)
+        # self.button_start2 = tk.Button(self, text='New line',
+        #                                command=create_button
+        #                                )
+        # self.button_start2.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
+        # self.button_start2.grid(row=i+11, column=2)
 
-        self.button_start3 = tk.Button(self, text='Destroy line',
-                                       command=lambda: destroy_element(list_text_box[-1],list_label_text[-1])
-                                       )
-        self.button_start3.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        self.button_start3.grid(row=i+12, column=2)
+        # self.button_start3 = tk.Button(self, text='Destroy line',
+        #                                command=lambda: destroy_element(list_text_box[-1],list_label_text[-1])
+        #                                )
+        # self.button_start3.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
+        # self.button_start3.grid(row=i+12, column=2)
 
         # self.scrollbar = tk.Scrollbar(root)
         # self.scrollbar.pack(side='right', fill='y')
 
         self.error_message = tk.Label(self, text='')
-        self.error_message.grid(row=7, column=2)
         self.error_message.config(font=("Helvetica", 12), padx='10')
+        self.error_message.pack()
 
         self.hint_message = tk.Label(self, text='')
-        self.hint_message.grid(row=8, column=2)
         self.hint_message.config(font=("Helvetica", 12), padx='10')
-
-
-
-
+        self.hint_message.pack()
 
 
 class Page3(Page):
@@ -290,7 +326,6 @@ class MainView(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-
 
     root.iconbitmap('smart_parking_short.ico')
     root.title('Smart Parking')
