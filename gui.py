@@ -1,3 +1,4 @@
+import time
 import tkinter as tk
 import webbrowser
 from threading import *
@@ -26,23 +27,26 @@ def start_local_server():
     LocalServer.run_app()
 
 
-def add_link(lbl1,lbl2):
-    if lbl1 == '':
-        print('please add valid text')
-        lbl2.configure(text='Textul introdus este invalid',bg='red')
+
+
+
+
+def start_all_cameras():
+    for link in links:
+        print(link[1])
+        threading_all_detections(link[1])
+        time.sleep(1)
+    print()
+
+
+
+def threading_all_detections(text):
+    x = text.split("https://www.youtube.com/watch?v=")
+    if x[0] is '' and len(x) is 2:
+        t2 = Thread(target=retrieve_input, kwargs=dict(text=text))
+        t2.start()
     else:
-
-        lbl2.configure(text='Linkul introdus este corect',bg='green')
-        f = open('free_spaces_cameras/camere.txt','a')
-        print(lbl1)
-        f.write('\n'+lbl1)
-        f.close()
-        # f = open('free_spaces_cameras/camere.txt', 'r')
-        links.append(lbl1)
-
-
-
-
+        print('nevalid')
 
 def threading_detections(text, lbl, lbl2):
     x = text.split("https://www.youtube.com/watch?v=")
@@ -169,6 +173,12 @@ class Page2(Page):
         self.background_photo = tk.Label(self, image=self.photo_bg)
         self.background_photo.place(x=70, y=450)
 
+        self.button_start_all = tk.Button(self, text='Click Here To All Cameras',
+                                          command=lambda: start_all_cameras()
+                                          )
+        self.button_start_all.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
+        self.button_start_all.pack()
+
         self.label_text = tk.Label(self, text='Introduceti linkul camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text.pack()
@@ -177,16 +187,24 @@ class Page2(Page):
         self.text_box1.config(font=("Helvetica", 12))
         self.text_box1.pack()
 
-        self.button_start = tk.Button(self, text='Click Here To Add',
-                                      command=lambda: add_link(self.text_box1.get("1.0", "end-1c"),self.label_text1)
-                                      )
+        self.label_text = tk.Label(self, text='Introduceti numele camerei de supravegheat')
+        self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
+        self.label_text.pack()
+
+        self.text_box2 = tk.Text(self, height=1, width=60)
+        self.text_box2.config(font=("Helvetica", 12))
+        self.text_box2.pack()
+
+        self.button_add = tk.Button(self, text='Click Here To Add',
+                                    command=lambda: add_link(self.text_box1.get("1.0", "end-1c"),self.label_text1,self.text_box2.get("1.0", "end-1c"))
+                                    )
 
 
         # threading_detections(self.text_box.get("1.0", "end-1c"),
         #                      self.error_message, self.hint_message)
         global i
-        self.button_start.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        self.button_start.pack()
+        self.button_add.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
+        self.button_add.pack()
 
         self.label_text1 = tk.Label(self, text='')
         self.label_text1.config(font=("Helvetica", 12), padx='10', justify='left')
@@ -201,85 +219,71 @@ class Page2(Page):
         self.text_box.config(font=("Helvetica", 12))
         self.text_box.pack()
 
-        # def create_button():
-        #     global i,j,x,list_text_box,list_label_text
-        #
-        #     self.label_text = tk.Label(self, text='Camera '+str(x)+ '(Introduceti linkul camerei de supravegheat)')
-        #     self.label_text.grid(row=i, column=2, padx=(0, 292))
-        #     self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
-        #     i = i + 2
-        #     list_label_text.append(self.label_text)
-        #
-        #
-        #     self.text_box = tk.Text(self, height=1, width=60)
-        #     self.text_box.grid(row=j, column=2)
-        #     self.text_box.config(font=("Helvetica", 12))
-        #     list_text_box.append(self.text_box)
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        #
-        #     print(list_text_box)
-        #
-        #     j= j+2
-        #     print('i='+str(i))
-        #     print('j=' + str(j))
-        #     x+=1
 
-        # def destroy_element(lbl1,lbl2):
-        #     global x,list_text_box,list_label_text
-        #
-        #     lbl1.destroy()
-        #     lbl2.destroy()
-        #
-        #     list_label_text.pop()
-        #     list_text_box.pop()
-        #     print(list_text_box)
-        #     print(lbl1)
-        #
-        #     x-=1
+        def add_link(lbl_link, lbl_dynamic, lbl_name):
+            print(lbl_link)
+            print(lbl_name)
+            if lbl_link == '' or lbl_name == '':
+                print('please add valid text')
+                lbl_dynamic.configure(text='Textul introdus este invalid', bg='red')
+            else:
 
-        self.button_start = tk.Button(self, text='Click Here To Remove',
-                                      command=lambda: threading_detections(self.text_box.get("1.0", "end-1c"),
-                                                                           self.error_message, self.hint_message)
-                                      )
+                lbl_dynamic.configure(text='Linkul introdus este corect', bg='green')
+                f = open('free_spaces_cameras/parking_cameras.txt', 'a')
+                print(lbl_link)
+                lbl_add = lbl_name + ' = ' + lbl_link
+                print(lbl_add)
+                f.write('\n' + lbl_add)
+                f.close()
 
-        f = open('free_spaces_cameras/camere.txt','r')
-        lines = f.readlines()
-        global links
-        for line in lines:
-            line = line.split(' = ')
-            links.append(line)
-        print(links)
+                f = open('free_spaces_cameras/parking_cameras.txt', 'r')
+                lines = f.readlines()
+                global links
+                lines[-1] = lines[-1].split(' = ')
+                links.append(lines[-1])
+                print(links)
+                self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, links)))
 
-        for link in links:
-            self.text_label = tk.Label(self, width=60)
-            self.text_label.config(font=("Helvetica", 12),text=link[0]+' : '+link[1])
-            self.text_label.pack()
+        def remove_link(lbl1,lbl2):
+            if lbl1 == '':
+                print('please add valid text')
+                lbl2.configure(text='Textul introdus este invalid', bg='red')
+            else:
+                lbl2.configure(text='Textul introdus este corect', bg='green')
+                for link in links:
+                    if lbl1 == link[0]:
 
 
 
-        self.button_start.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        self.button_start.pack()
 
-        # self.button_start2 = tk.Button(self, text='New line',
-        #                                command=create_button
-        #                                )
-        # self.button_start2.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        # self.button_start2.grid(row=i+11, column=2)
+                        print('este egal lol')
+                        links.remove(link)
+                        print(links)
+                        self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, links)))
 
-        # self.button_start3 = tk.Button(self, text='Destroy line',
-        #                                command=lambda: destroy_element(list_text_box[-1],list_label_text[-1])
-        #                                )
-        # self.button_start3.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        # self.button_start3.grid(row=i+12, column=2)
+                        with open('free_spaces_cameras/parking_cameras.txt','r+') as f:
+                            lines = f.readlines()
+                            f.seek(0)
+                            for line in lines:
+                                if lbl1 not in line :
+                                    print(line)
+                                    f.write(line)
+                            f.truncate()
 
-        # self.scrollbar = tk.Scrollbar(root)
-        # self.scrollbar.pack(side='right', fill='y')
+
+
+
+
+        self.button_remove = tk.Button(self, text='Click Here To Remove',
+                                    command=lambda: remove_link(self.text_box.get("1.0", "end-1c"),self.label_text2)
+                                    )
+        self.button_remove.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
+        self.button_remove.pack()
+
+        self.label_text2 = tk.Label(self, text='')
+        self.label_text2.config(font=("Helvetica", 12), padx='10', justify='left')
+        self.label_text2.pack()
+
 
         self.error_message = tk.Label(self, text='')
         self.error_message.config(font=("Helvetica", 12), padx='10')
@@ -288,6 +292,21 @@ class Page2(Page):
         self.hint_message = tk.Label(self, text='')
         self.hint_message.config(font=("Helvetica", 12), padx='10')
         self.hint_message.pack()
+
+        f = open('free_spaces_cameras/parking_cameras.txt', 'r')
+        lines = f.readlines()
+        global links
+        for line in lines:
+            line = line.rstrip('\n')
+            line = line.split(' = ')
+            links.append(line)
+        print(links)
+        # links_showed = list(list(zip(*lst))[0]
+        def Extract(lst):
+            return list(list(zip(*lst))[0])
+        self.text_label = tk.Label(self, width=100)
+        self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, links)))
+        self.text_label.pack()
 
 
 class Page3(Page):
@@ -332,5 +351,5 @@ if __name__ == "__main__":
 
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("800x800")
+    root.wm_geometry("1500x800")
     root.mainloop()
