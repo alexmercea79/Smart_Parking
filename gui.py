@@ -2,6 +2,7 @@ import time
 import tkinter as tk
 import webbrowser
 from threading import *
+from tkinter.tix import ScrolledWindow
 
 
 class Page(tk.Frame):
@@ -221,28 +222,48 @@ class Page2(Page):
 
 
         def add_link(lbl_link, lbl_dynamic, lbl_name):
-            print(lbl_link)
-            print(lbl_name)
+            global links
+            # print(lbl_link)
+            gasit_nume = 0
+            gasit_link = 0
+            # print(lbl_name)
+            # f = open('free_spaces_cameras/parking_cameras.txt', 'r')
+            for link in links:
+                print(link[0])
+                if link[0] == lbl_name:
+                    gasit_nume = 1
+                # print(gasit_nume)
+                if link[1] == lbl_link:
+                    gasit_link = 1
             if lbl_link == '' or lbl_name == '':
                 print('please add valid text')
                 lbl_dynamic.configure(text='Textul introdus este invalid', bg='red')
+            elif gasit_nume is 1:
+                print('please add valid text')
+                lbl_dynamic.configure(text='Acest nume este deja utilizat!', bg='red')
+            elif gasit_link is 1:
+                print('please add valid text')
+                lbl_dynamic.configure(text='Acest link este deja utilizat!', bg='red')
             else:
 
                 lbl_dynamic.configure(text='Linkul introdus este corect', bg='green')
                 f = open('free_spaces_cameras/parking_cameras.txt', 'a')
-                print(lbl_link)
+                # print(lbl_link)
                 lbl_add = lbl_name + ' = ' + lbl_link
-                print(lbl_add)
+                # print(lbl_add)
                 f.write('\n' + lbl_add)
                 f.close()
 
                 f = open('free_spaces_cameras/parking_cameras.txt', 'r')
                 lines = f.readlines()
-                global links
                 lines[-1] = lines[-1].split(' = ')
                 links.append(lines[-1])
                 print(links)
-                self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, links)))
+
+
+
+                self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
+                self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
 
         def remove_link(lbl1,lbl2):
             if lbl1 == '':
@@ -259,7 +280,8 @@ class Page2(Page):
                         print('este egal lol')
                         links.remove(link)
                         print(links)
-                        self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, links)))
+                        self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
+                        self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
 
                         with open('free_spaces_cameras/parking_cameras.txt','r+') as f:
                             lines = f.readlines()
@@ -302,11 +324,35 @@ class Page2(Page):
             links.append(line)
         print(links)
         # links_showed = list(list(zip(*lst))[0]
-        def Extract(lst):
+        def Extract1(lst):
             return list(list(zip(*lst))[0])
-        self.text_label = tk.Label(self, width=100)
-        self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, links)))
-        self.text_label.pack()
+        def Extract2(lst):
+            return list(list(zip(*lst))[1])
+
+        self.text_labeld = tk.Label(self)
+        self.text_labeld.config(padx='50',anchor='n', justify='left', font=("Helvetica", 12),)
+        self.text_labeld.pack(side='left', fill='y')
+        self.text_label = tk.Label(self)
+        self.text_label.config(anchor='n',justify='left',font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
+        self.text_label.pack(side='left',fill='y')
+
+        self.scrollbar = tk.Scrollbar(self, orient="vertical")
+
+        # Pack the scroll bar
+        # Place it to the right side, using tk.RIGHT
+
+
+
+        self.text_label2 = tk.Label(self)
+        self.text_label2.config(padx=20,anchor='n', justify='left', font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
+        self.text_label2.pack(side='left',fill='y')
+
+        # self.canvas = tk.Canvas(self,width=300, height=300, bg='white')
+        # self.canvas.pack(expand='yes', fill='both')
+
+
+
+
 
 
 class Page3(Page):
@@ -351,5 +397,6 @@ if __name__ == "__main__":
 
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("1500x800")
+    root.wm_geometry("1100x800")
+
     root.mainloop()
