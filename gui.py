@@ -2,7 +2,6 @@ import time
 import tkinter as tk
 import webbrowser
 from threading import *
-from tkinter.tix import ScrolledWindow
 
 
 class Page(tk.Frame):
@@ -23,13 +22,9 @@ def threading_local_server(lbl, lbl2):
 
 def start_local_server():
     import LocalServer
-    webbrowser.open('http://127.0.0.1:5000/sms', new=2)
+    # webbrowser.open('http://127.0.0.1:5000/sms', new=2)
 
     LocalServer.run_app()
-
-
-
-
 
 
 def start_all_cameras():
@@ -40,7 +35,6 @@ def start_all_cameras():
     print()
 
 
-
 def threading_all_detections(text):
     x = text.split("https://www.youtube.com/watch?v=")
     if x[0] is '' and len(x) is 2:
@@ -48,6 +42,7 @@ def threading_all_detections(text):
         t2.start()
     else:
         print('nevalid')
+
 
 def threading_detections(text, lbl, lbl2):
     x = text.split("https://www.youtube.com/watch?v=")
@@ -197,9 +192,9 @@ class Page2(Page):
         self.text_box2.pack()
 
         self.button_add = tk.Button(self, text='Click Here To Add',
-                                    command=lambda: add_link(self.text_box1.get("1.0", "end-1c"),self.label_text1,self.text_box2.get("1.0", "end-1c"))
+                                    command=lambda: add_link(self.text_box1.get("1.0", "end-1c"), self.label_text1,
+                                                             self.text_box2.get("1.0", "end-1c"))
                                     )
-
 
         # threading_detections(self.text_box.get("1.0", "end-1c"),
         #                      self.error_message, self.hint_message)
@@ -211,7 +206,6 @@ class Page2(Page):
         self.label_text1.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text1.pack()
 
-
         self.label_text = tk.Label(self, text='Stergeti linkul')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text.pack()
@@ -219,7 +213,6 @@ class Page2(Page):
         self.text_box = tk.Text(self, height=1, width=60)
         self.text_box.config(font=("Helvetica", 12))
         self.text_box.pack()
-
 
         def add_link(lbl_link, lbl_dynamic, lbl_name):
             global links
@@ -249,6 +242,18 @@ class Page2(Page):
                 lbl_dynamic.configure(text='Linkul introdus este corect', bg='green')
                 f = open('parking_data/parking_cameras.txt', 'a')
                 # print(lbl_link)
+
+
+                import re
+                y = re.search('t=[1-9]+[a-z]*&', lbl_link)
+                print(lbl_link)
+                print('y= ' + str(y))
+                if y is not None:
+                    y = re.findall('t=[1-9]+[a-z]*&', lbl_link)
+                    lbl_link = lbl_link.replace(str(y[0]), '')
+
+
+
                 lbl_add = lbl_name + ' = ' + lbl_link
                 # print(lbl_add)
                 f.write('\n' + lbl_add)
@@ -260,12 +265,10 @@ class Page2(Page):
                 links.append(lines[-1])
                 print(links)
 
-
-
                 self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
                 self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
 
-        def remove_link(lbl1,lbl2):
+        def remove_link(lbl1, lbl2):
             if lbl1 == '':
                 print('please add valid text')
                 lbl2.configure(text='Textul introdus este invalid', bg='red')
@@ -274,38 +277,30 @@ class Page2(Page):
                 for link in links:
                     if lbl1 == link[0]:
 
-
-
-
                         print('este egal lol')
                         links.remove(link)
                         print(links)
                         self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
                         self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
 
-                        with open('parking_data/parking_cameras.txt','r+') as f:
+                        with open('parking_data/parking_cameras.txt', 'r+') as f:
                             lines = f.readlines()
                             f.seek(0)
                             for line in lines:
-                                if lbl1 not in line :
+                                if lbl1 not in line:
                                     print(line)
                                     f.write(line)
                             f.truncate()
 
-
-
-
-
         self.button_remove = tk.Button(self, text='Click Here To Remove',
-                                    command=lambda: remove_link(self.text_box.get("1.0", "end-1c"),self.label_text2)
-                                    )
+                                       command=lambda: remove_link(self.text_box.get("1.0", "end-1c"), self.label_text2)
+                                       )
         self.button_remove.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_remove.pack()
 
         self.label_text2 = tk.Label(self, text='')
         self.label_text2.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text2.pack()
-
 
         self.error_message = tk.Label(self, text='')
         self.error_message.config(font=("Helvetica", 12), padx='10')
@@ -323,36 +318,34 @@ class Page2(Page):
             line = line.split(' = ')
             links.append(line)
         print(links)
+
         # links_showed = list(list(zip(*lst))[0]
         def Extract1(lst):
             return list(list(zip(*lst))[0])
+
         def Extract2(lst):
             return list(list(zip(*lst))[1])
 
         self.text_labeld = tk.Label(self)
-        self.text_labeld.config(padx='50',anchor='n', justify='left', font=("Helvetica", 12),)
+        self.text_labeld.config(padx='50', anchor='n', justify='left', font=("Helvetica", 12), )
         self.text_labeld.pack(side='left', fill='y')
         self.text_label = tk.Label(self)
-        self.text_label.config(anchor='n',justify='left',font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
-        self.text_label.pack(side='left',fill='y')
+        self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
+                               text='\n'.join(map(str, Extract1(links))))
+        self.text_label.pack(side='left', fill='y')
 
         self.scrollbar = tk.Scrollbar(self, orient="vertical")
 
         # Pack the scroll bar
         # Place it to the right side, using tk.RIGHT
 
-
-
         self.text_label2 = tk.Label(self)
-        self.text_label2.config(padx=20,anchor='n', justify='left', font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
-        self.text_label2.pack(side='left',fill='y')
+        self.text_label2.config(padx=20, anchor='n', justify='left', font=("Helvetica", 12),
+                                text='\n'.join(map(str, Extract2(links))))
+        self.text_label2.pack(side='left', fill='y')
 
         # self.canvas = tk.Canvas(self,width=300, height=300, bg='white')
         # self.canvas.pack(expand='yes', fill='both')
-
-
-
-
 
 
 class Page3(Page):

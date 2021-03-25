@@ -12,21 +12,24 @@ def sms_reply():
     lines=f.readlines()
 
     resp = MessagingResponse()
-    resp.message('Din pacate textul introdus nu corespunde. Va rugam introduceti o parcare valida')
-
+    resp.message('Din pacate textul introdus nu corespunde. Va rugam introduceti o parcare valida.\nAceasta este lista parcarilor disponibile:')
+    all_parking=''
+    verif=0
     for line in lines:
         line = line.rstrip('\n')
         line = line.split(' = ')
         print(line[1])
         y = line[1].split("https://www.youtube.com/watch?v=")
-        print(y[1])
+        # print(y[1])
         file_txt=y[1]+'.txt'
         print(body)
+
         if str(line[0]) == str(body):
-            print('adevarat toati')
+            verif=3
+            print('adevarat')
             print(line[1])
 
-            path = 'parking_data/'+ file_txt
+            path = 'free_spaces_cameras/'+ file_txt
             file = open(path, 'r')
             file_open = file.read()
             resp = MessagingResponse()
@@ -39,16 +42,26 @@ def sms_reply():
                 resp.message("Din pacate toate locurile de parcare sunt ocupate.")
             else:
                 resp.message("Sunt {} locuri libere de parcare.".format(str(file_open)))
+        elif 'Afisare Parcare' == str(body):
+            verif=1
+            resp = MessagingResponse()
+            all_parking= all_parking+str(line[0])+'\n'
+            # resp.message(str(line[0]))
+            print(all_parking)
+        elif verif is not 3:
+            verif = 2
+            # resp.message('Din pacate textul introdus nu corespunde. Va rugam introduceti o parcare valida')
+            all_parking = all_parking + str(line[0]) + '\n'
+
+    if verif == 1:
+        resp.message(all_parking)
+    elif verif == 2:
+        resp.message(all_parking)
+    print(str(verif) + 'verif')
+
     return str(resp)
 
 
-@app.route("/id", methods=['GET', 'POST'])
-def sms_repl():
-    path = 'values.txt'
-    days_file = open(path, 'r')
-    days = days_file.read()
-
-    return days
 
 
 def run_app():
