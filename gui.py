@@ -247,14 +247,14 @@ class Page2(Page):
             else:
 
                 lbl_dynamic.configure(text='Linkul introdus este corect', bg='green')
-                f = open('free_spaces_cameras/parking_cameras.txt', 'a')
+                f = open('parking_data/parking_cameras.txt', 'a')
                 # print(lbl_link)
                 lbl_add = lbl_name + ' = ' + lbl_link
                 # print(lbl_add)
                 f.write('\n' + lbl_add)
                 f.close()
 
-                f = open('free_spaces_cameras/parking_cameras.txt', 'r')
+                f = open('parking_data/parking_cameras.txt', 'r')
                 lines = f.readlines()
                 lines[-1] = lines[-1].split(' = ')
                 links.append(lines[-1])
@@ -283,7 +283,7 @@ class Page2(Page):
                         self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
                         self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
 
-                        with open('free_spaces_cameras/parking_cameras.txt','r+') as f:
+                        with open('parking_data/parking_cameras.txt','r+') as f:
                             lines = f.readlines()
                             f.seek(0)
                             for line in lines:
@@ -315,7 +315,7 @@ class Page2(Page):
         self.hint_message.config(font=("Helvetica", 12), padx='10')
         self.hint_message.pack()
 
-        f = open('free_spaces_cameras/parking_cameras.txt', 'r')
+        f = open('parking_data/parking_cameras.txt', 'r')
         lines = f.readlines()
         global links
         for line in lines:

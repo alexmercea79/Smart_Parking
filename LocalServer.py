@@ -3,11 +3,12 @@ from twilio.twiml.messaging_response import MessagingResponse
 
 app = Flask(__name__)
 
-
+# https://www.youtube.com/watch?v=U7HRKjlXK-Y&ab_channel=Supercircuits
+# U7HRKjlXK-Y&ab_channel=Supercircuits.txt
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_reply():
     body = request.values.get('Body', None)
-    f = open('free_spaces_cameras/camere.txt')
+    f = open('parking_data/parking_cameras.txt')
     lines=f.readlines()
 
     resp = MessagingResponse()
@@ -16,13 +17,16 @@ def sms_reply():
     for line in lines:
         line = line.rstrip('\n')
         line = line.split(' = ')
-        print(line[0])
+        print(line[1])
+        y = line[1].split("https://www.youtube.com/watch?v=")
+        print(y[1])
+        file_txt=y[1]+'.txt'
         print(body)
         if str(line[0]) == str(body):
             print('adevarat toati')
             print(line[1])
 
-            path = 'free_spaces_cameras/'+ line[1]
+            path = 'parking_data/'+ file_txt
             file = open(path, 'r')
             file_open = file.read()
             resp = MessagingResponse()
