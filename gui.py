@@ -65,10 +65,10 @@ def retrieve_input(text):
     detections.threading_working(text)
 
 
-def drawing():
+def drawing(text):
     import detections
 
-    detections.draw()
+    detections.draw(text)
 
     # label = tk.Label(self, text="This is page 1")
     # label.pack(side="top", fill="both", expand=True)
@@ -153,7 +153,7 @@ class Page1(Page):
         self.hint_message.grid(row=8, column=2)
         self.hint_message.config(font=("Helvetica", 12), padx='10')
 
-        self.button_rerun_schema = tk.Button(self, text='Schema de parcare noua', command=drawing, bg='gray')
+        self.button_rerun_schema = tk.Button(self, text='Schema de parcare noua', command=lambda: drawing(self.text_box.get("1.0", "end-1c")), bg='gray')
         self.button_rerun_schema.grid(row=9, column=2)
         self.button_rerun_schema.config(font=("Helvetica", 12), height=1, width=30)
 

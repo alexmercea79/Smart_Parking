@@ -4,11 +4,21 @@ import re
 refPt = []
 
 
-def draw():
+def draw(url):
     import cv2
     import yaml
     cropping = False
     data = []
+    print(url)
+    splitter = url.split("https://www.youtube.com/watch?v=")
+    y = re.search('t=[1-9]+[a-z]*&', splitter[1])
+    print(splitter[1])
+    print('y= ' + str(y))
+    if y is not None:
+        y = re.findall('t=[1-9]+[a-z]*&', splitter[1])
+        splitter[1] = splitter[1].replace(str(y[0]), '')
+    fn_yaml = splitter[1] + ".yml"
+    print(fn_yaml)
     file_path = "ymls/" + fn_yaml
     img = cv2.imread('images/' + splitter[1] + ".jpg")
 
@@ -219,7 +229,7 @@ def detections_working(url):
         if parking_data is None:
             print("Niciun loc de parcare inregistrat. Va rugam marcati fiecare loc de parcare!")
 
-            draw()
+            draw(url)
             parking_data = yaml.load(stream, Loader=yaml.FullLoader)
     parking_contours = []
     parking_bounding_rects = []
