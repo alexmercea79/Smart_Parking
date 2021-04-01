@@ -27,7 +27,12 @@ def start_local_server():
     LocalServer.run_app()
 
 
-def start_all_cameras():
+def start_all_cameras(lbl1,lbl2):
+    if links == []:
+        lbl1.config(text='Lista camerelor este goala',bg='red')
+        lbl2.config(text='Sfat: Va rugam introduceti o camera!')
+    else:
+        lbl1.config(text='Camerele sunt pornite!',bg='green')
     for link in links:
         print(link[1])
         threading_all_detections(link[1])
@@ -74,11 +79,11 @@ def drawing(text):
     # label.pack(side="top", fill="both", expand=True)
 
 
-i = 5
-j = 6
-x = 2
-list_text_box = []
-list_label_text = []
+# i = 5
+# j = 6
+# x = 2
+# list_text_box = []
+# list_label_text = []
 links = []
 
 
@@ -90,8 +95,8 @@ class Page1(Page):
         self.background_photo.place(x=70, y=450)
 
         self.label_delimitare1 = tk.Label(self)
-        self.label_delimitare1.grid(row=1, column=2, sticky='w')
-        self.label_delimitare1.config(height=2, width=100)
+        self.label_delimitare1.pack()
+        self.label_delimitare1.config()
 
         self.label_server_status = tk.Label(self, text='SERVER STATUS: Offline', bg='red')
         self.label_server_status.grid(row=0, column=2, sticky='w')
@@ -153,7 +158,8 @@ class Page1(Page):
         self.hint_message.grid(row=8, column=2)
         self.hint_message.config(font=("Helvetica", 12), padx='10')
 
-        self.button_rerun_schema = tk.Button(self, text='Schema de parcare noua', command=lambda: drawing(self.text_box.get("1.0", "end-1c")), bg='gray')
+        self.button_rerun_schema = tk.Button(self, text='Schema de parcare noua',
+                                             command=lambda: drawing(self.text_box.get("1.0", "end-1c")), bg='gray')
         self.button_rerun_schema.grid(row=9, column=2)
         self.button_rerun_schema.config(font=("Helvetica", 12), height=1, width=30)
 
@@ -169,11 +175,20 @@ class Page2(Page):
         self.background_photo = tk.Label(self, image=self.photo_bg)
         self.background_photo.place(x=70, y=450)
 
-        self.button_start_all = tk.Button(self, text='Click Here To All Cameras',
-                                          command=lambda: start_all_cameras()
+        self.button_start_all = tk.Button(self, text='Click Here To Start All Cameras',
+                                          command=lambda: start_all_cameras(self.label_text3,self.label_text4)
                                           )
         self.button_start_all.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_start_all.pack()
+
+        self.label_text3 = tk.Label(self, text='')
+        self.label_text3.config(font=("Helvetica", 12), padx='10', justify='left')
+        self.label_text3.pack()
+
+        self.label_text4 = tk.Label(self, text='')
+        self.label_text4.config(font=("Helvetica", 12), padx='10', justify='left')
+        self.label_text4.pack()
+
 
         self.label_text = tk.Label(self, text='Introduceti linkul camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
@@ -193,12 +208,12 @@ class Page2(Page):
 
         self.button_add = tk.Button(self, text='Click Here To Add',
                                     command=lambda: add_link(self.text_box1.get("1.0", "end-1c"), self.label_text1,
-                                                             self.text_box2.get("1.0", "end-1c"))
+                                                             self.text_box2.get("1.0", "end-1c"), self.text_box1,
+                                                             self.text_box2)
                                     )
 
         # threading_detections(self.text_box.get("1.0", "end-1c"),
         #                      self.error_message, self.hint_message)
-        global i
         self.button_add.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_add.pack()
 
@@ -206,7 +221,7 @@ class Page2(Page):
         self.label_text1.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text1.pack()
 
-        self.label_text = tk.Label(self, text='Stergeti linkul')
+        self.label_text = tk.Label(self, text='Stergeti numele camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text.pack()
 
@@ -214,7 +229,7 @@ class Page2(Page):
         self.text_box.config(font=("Helvetica", 12))
         self.text_box.pack()
 
-        def add_link(lbl_link, lbl_dynamic, lbl_name):
+        def add_link(lbl_link, lbl_dynamic, lbl_name, lbl_clear_text, lbl_clear_link):
             global links
             # print(lbl_link)
             gasit_nume = 0
@@ -243,7 +258,6 @@ class Page2(Page):
                 f = open('parking_data/parking_cameras.txt', 'a')
                 # print(lbl_link)
 
-
                 import re
                 y = re.search('t=[1-9]+[a-z]*&', lbl_link)
                 print(lbl_link)
@@ -252,48 +266,79 @@ class Page2(Page):
                     y = re.findall('t=[1-9]+[a-z]*&', lbl_link)
                     lbl_link = lbl_link.replace(str(y[0]), '')
 
-
-
                 lbl_add = lbl_name + ' = ' + lbl_link
-                # print(lbl_add)
-                f.write('\n' + lbl_add)
+                lbl_clear_text.delete("1.0", "end-1c")
+                lbl_clear_link.delete("1.0", "end-1c")
+                print('dsad= ' + str(lbl_add))
+                if len(links) == 0:
+                    f.write(lbl_add)
+                else:
+
+                    f.write('\n' + lbl_add)
                 f.close()
 
                 f = open('parking_data/parking_cameras.txt', 'r')
                 lines = f.readlines()
                 lines[-1] = lines[-1].split(' = ')
                 links.append(lines[-1])
-                print(links)
+                print('lungime= ' + str(len(links)))
 
                 self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
                 self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
 
-        def remove_link(lbl1, lbl2):
+        def remove_link(lbl1, lbl2, lbl_clear_text):
+            gasit_nume = 1
+            for link in links:
+                print(link[0])
+                if link[0] == lbl1:
+                    gasit_nume = 0
+                # print(gasit_nume)
+
             if lbl1 == '':
                 print('please add valid text')
                 lbl2.configure(text='Textul introdus este invalid', bg='red')
-            else:
+            elif gasit_nume == 1:
+                print('Acest nume nu este gasit')
+                lbl2.configure(text='Acest nume nu a fost gasit', bg='red')
+
+            elif gasit_nume == 0:
                 lbl2.configure(text='Textul introdus este corect', bg='green')
                 for link in links:
                     if lbl1 == link[0]:
 
                         print('este egal lol')
                         links.remove(link)
-                        print(links)
-                        self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
-                        self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
+                        print('lungime este egala cu ' + str(len(links)))
+                        if len(links) == 0:
+                            self.text_label.config(font=("Helvetica", 12), text='lista este goala')
+                            self.text_label2.config(font=("Helvetica", 12), text='lista este goala')
+                        else:
+                            self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
+                            self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
 
                         with open('parking_data/parking_cameras.txt', 'r+') as f:
                             lines = f.readlines()
+                            print('lungimea fisierului= ' + str(len(lines)))
                             f.seek(0)
                             for line in lines:
-                                if lbl1 not in line:
-                                    print(line)
+                                to_check = line.split(' = ')
+                                if len(lines) == 1 and to_check[0] == lbl1:
+                                    f.truncate(0)
+
+                                if to_check[0] != lbl1:
+                                    print('linia: ' + str(line))
+                                    # if lbl1 not in line:
+                                    print('De verificat = ' + str(to_check[0]) + ' lbl1= ' + str(lbl1))
+                                    # print(to_check[0])
+
                                     f.write(line)
-                            f.truncate()
+                                    f.truncate()
+                lbl_clear_text.delete("1.0", "end-1c")
 
         self.button_remove = tk.Button(self, text='Click Here To Remove',
-                                       command=lambda: remove_link(self.text_box.get("1.0", "end-1c"), self.label_text2)
+                                       command=lambda: remove_link(self.text_box.get("1.0", "end-1c"),
+                                                                   self.label_text2,
+                                                                   self.text_box)
                                        )
         self.button_remove.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_remove.pack()
@@ -320,6 +365,7 @@ class Page2(Page):
         print(links)
 
         # links_showed = list(list(zip(*lst))[0]
+
         def Extract1(lst):
             return list(list(zip(*lst))[0])
 
@@ -330,8 +376,14 @@ class Page2(Page):
         self.text_labeld.config(padx='50', anchor='n', justify='left', font=("Helvetica", 12), )
         self.text_labeld.pack(side='left', fill='y')
         self.text_label = tk.Label(self)
-        self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
-                               text='\n'.join(map(str, Extract1(links))))
+        if links == []:
+
+            self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
+                                   text='')
+        else:
+            self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
+                                   text='\n'.join(map(str, Extract1(links))))
+
         self.text_label.pack(side='left', fill='y')
 
         self.scrollbar = tk.Scrollbar(self, orient="vertical")
@@ -340,8 +392,13 @@ class Page2(Page):
         # Place it to the right side, using tk.RIGHT
 
         self.text_label2 = tk.Label(self)
-        self.text_label2.config(padx=20, anchor='n', justify='left', font=("Helvetica", 12),
-                                text='\n'.join(map(str, Extract2(links))))
+        if links == []:
+
+            self.text_label2.config(padx=20, anchor='n', justify='left', font=("Helvetica", 12),
+                                    text='')
+        else:
+            self.text_label2.config(padx=20, anchor='n', justify='left', font=("Helvetica", 12),
+                                    text='\n'.join(map(str, Extract2(links))))
         self.text_label2.pack(side='left', fill='y')
 
         # self.canvas = tk.Canvas(self,width=300, height=300, bg='white')
