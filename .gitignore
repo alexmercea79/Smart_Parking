@@ -27,6 +27,10 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+ymls/
+videos/
+images/
+
 downloads/
 eggs/
 .eggs/
