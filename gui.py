@@ -99,29 +99,29 @@ class Page1(Page):
         self.label_delimitare1.config()
 
         self.label_server_status = tk.Label(self, text='SERVER STATUS: Offline', bg='red')
-        self.label_server_status.grid(row=0, column=2, sticky='w')
+        self.label_server_status.pack(anchor='w')
         self.label_server_status.config(font=("Helvetica", 12), padx='10', justify='left')
 
         self.label2 = tk.Label(self, text='Porniti serverul pentru a putea primi mesaje pe telefonul mobil')
-        self.label2.grid(row=2, column=2)
+        self.label2.pack(anchor='w')
         self.label2.config(font=("Helvetica", 12))
 
         self.label_delimitare2 = tk.Label(self)
-        self.label_delimitare2.grid(row=4, column=2, sticky='w')
+        self.label_delimitare2.pack()
         self.label_delimitare2.config(height=2, width=100)
 
         self.button_start_server = tk.Button(self, text='Start Server',
                                              command=lambda: threading_local_server(self.label_server_status,
                                                                                     self.button_start_server))
-        self.button_start_server.grid(row=3, column=2)
+        self.button_start_server.pack()
         self.button_start_server.config(bg='red', font=("Helvetica", 12), height=1, width=30, )
 
         self.label_text = tk.Label(self, text='Introduceti linkul camerei de supravegheat:')
-        self.label_text.grid(row=4, column=2, padx=(0, 292))
+        self.label_text.pack()
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
 
         self.text_box = tk.Text(self, height=1, width=60)
-        self.text_box.grid(row=5, column=2)
+        self.text_box.pack()
         self.text_box.config(font=("Helvetica", 12))
         x = 3
 
@@ -139,7 +139,7 @@ class Page1(Page):
                                                                            self.error_message, self.hint_message)
                                       )
         self.button_start.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        self.button_start.grid(row=6, column=2)
+        self.button_start.pack()
 
         # self.button_start2 = tk.Button(self, text='New line',
         #                               command=create_button
@@ -151,29 +151,33 @@ class Page1(Page):
         # self.scrollbar.pack(side='right', fill='y')
 
         self.error_message = tk.Label(self, text='')
-        self.error_message.grid(row=7, column=2)
+        self.error_message.pack()
         self.error_message.config(font=("Helvetica", 12), padx='10')
 
         self.hint_message = tk.Label(self, text='')
-        self.hint_message.grid(row=8, column=2)
+        self.hint_message.pack()
         self.hint_message.config(font=("Helvetica", 12), padx='10')
 
         self.button_rerun_schema = tk.Button(self, text='Schema de parcare noua',
                                              command=lambda: drawing(self.text_box.get("1.0", "end-1c")), bg='gray')
-        self.button_rerun_schema.grid(row=9, column=2)
+        self.button_rerun_schema.pack()
         self.button_rerun_schema.config(font=("Helvetica", 12), height=1, width=30)
 
         self.button_iesire_program = tk.Button(self, text='Iesire Program', command=root.destroy)
         self.button_iesire_program.config(height=1, width=30, font=("Helvetica", 12))
-        self.button_iesire_program.grid(row=10, column=2)
+        self.button_iesire_program.pack()
 
 
 class Page2(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        self.photo_bg = tk.PhotoImage(file="smart_parking_long.PNG")
-        self.background_photo = tk.Label(self, image=self.photo_bg)
-        self.background_photo.place(x=70, y=450)
+        # self.photo_bg = tk.PhotoImage(file="smart_parking_long.PNG")
+        # self.background_photo = tk.Label(self, image=self.photo_bg)
+        # self.background_photo.place(x=70, y=450)
+
+        self.label_delimitare2 = tk.Label(self)
+        self.label_delimitare2.pack()
+        self.label_delimitare2.config(height=1, width=100)
 
         self.button_start_all = tk.Button(self, text='Click Here To Start All Cameras',
                                           command=lambda: start_all_cameras(self.label_text3,self.label_text4)
@@ -197,6 +201,10 @@ class Page2(Page):
         self.text_box1 = tk.Text(self, height=1, width=60)
         self.text_box1.config(font=("Helvetica", 12))
         self.text_box1.pack()
+
+        self.label_delimitare2 = tk.Label(self)
+        self.label_delimitare2.pack()
+        self.label_delimitare2.config(height=1, width=100)
 
         self.label_text = tk.Label(self, text='Introduceti numele camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
@@ -310,8 +318,8 @@ class Page2(Page):
                         links.remove(link)
                         print('lungime este egala cu ' + str(len(links)))
                         if len(links) == 0:
-                            self.text_label.config(font=("Helvetica", 12), text='lista este goala')
-                            self.text_label2.config(font=("Helvetica", 12), text='lista este goala')
+                            self.text_label.config(font=("Helvetica", 12), text='Lista este goala. Va rugam introduceti un loc de parcare!')
+                            self.text_label2.config(font=("Helvetica", 12), text='')
                         else:
                             self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
                             self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
@@ -343,17 +351,24 @@ class Page2(Page):
         self.button_remove.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_remove.pack()
 
+
+
         self.label_text2 = tk.Label(self, text='')
         self.label_text2.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text2.pack()
 
-        self.error_message = tk.Label(self, text='')
-        self.error_message.config(font=("Helvetica", 12), padx='10')
-        self.error_message.pack()
+        # self.error_message = tk.Label(self, text='dsadasda')
+        # self.error_message.config(font=("Helvetica", 12), padx='10')
+        # self.error_message.pack()
 
-        self.hint_message = tk.Label(self, text='')
-        self.hint_message.config(font=("Helvetica", 12), padx='10')
-        self.hint_message.pack()
+        # self.hint_message = tk.Label(self, text='')
+        # self.hint_message.config(font=("Helvetica", 12), padx='10')
+        # self.hint_message.pack()
+
+
+        self.label_delimitare2 = tk.Label(self)
+        self.label_delimitare2.pack()
+        self.label_delimitare2.config(height=1, width=100, text='Lista locurilor de parcare:', font=("Helvetica", 18),anchor='w',padx=100)
 
         f = open('parking_data/parking_cameras.txt', 'r')
         lines = f.readlines()
@@ -379,7 +394,7 @@ class Page2(Page):
         if links == []:
 
             self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
-                                   text='')
+                                   text='Lista este goala. Va rugam introduceti un loc de parcare!')
         else:
             self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
                                    text='\n'.join(map(str, Extract1(links))))
@@ -447,6 +462,6 @@ if __name__ == "__main__":
 
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
-    root.wm_geometry("1100x800")
+    root.wm_geometry("1100x900")
 
     root.mainloop()
