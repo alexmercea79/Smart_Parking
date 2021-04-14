@@ -1,5 +1,6 @@
 import time
 import tkinter as tk
+from tkinter import ttk
 import webbrowser
 from threading import *
 
@@ -13,7 +14,6 @@ class Page(tk.Frame):
 
 
 def threading_local_server(lbl, lbl2):
-    # Call work function
     lbl.config(text="SERVER STATUS: Online", bg='green')
     lbl2.config(bg='green', state='disabled', disabledforeground="black", text='Serverul este pornit')
     t1 = Thread(target=start_local_server)
@@ -27,12 +27,12 @@ def start_local_server():
     LocalServer.run_app()
 
 
-def start_all_cameras(lbl1,lbl2):
+def start_all_cameras(lbl1, lbl2):
     if links == []:
-        lbl1.config(text='Lista camerelor este goala',bg='red')
+        lbl1.config(text='Lista camerelor este goala', bg='red')
         lbl2.config(text='Sfat: Va rugam introduceti o camera!')
     else:
-        lbl1.config(text='Camerele sunt pornite!',bg='green')
+        lbl1.config(text='Camerele sunt pornite!', bg='green')
     for link in links:
         print(link[1])
         threading_all_detections(link[1])
@@ -75,15 +75,7 @@ def drawing(text):
 
     detections.draw(text)
 
-    # label = tk.Label(self, text="This is page 1")
-    # label.pack(side="top", fill="both", expand=True)
 
-
-# i = 5
-# j = 6
-# x = 2
-# list_text_box = []
-# list_label_text = []
 links = []
 
 
@@ -123,16 +115,6 @@ class Page1(Page):
         self.text_box = tk.Text(self, height=1, width=60)
         self.text_box.pack()
         self.text_box.config(font=("Helvetica", 12))
-        x = 3
-
-        # def create_button():
-        #     global i
-        #
-        #     self.text_box = tk.Text(self, height=1, width=60)
-        #     self.text_box.grid(row=i+5, column=2)
-        #     self.text_box.config(font=("Helvetica", 12))
-        #     i=i+1
-        #     print(i)
 
         self.button_start = tk.Button(self, text='Click Here To Start',
                                       command=lambda: threading_detections(self.text_box.get("1.0", "end-1c"),
@@ -140,15 +122,6 @@ class Page1(Page):
                                       )
         self.button_start.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_start.pack()
-
-        # self.button_start2 = tk.Button(self, text='New line',
-        #                               command=create_button
-        #                               )
-        # self.button_start2.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
-        # self.button_start2.grid(row=7, column=2)
-
-        # self.scrollbar = tk.Scrollbar(root)
-        # self.scrollbar.pack(side='right', fill='y')
 
         self.error_message = tk.Label(self, text='')
         self.error_message.pack()
@@ -180,7 +153,7 @@ class Page2(Page):
         self.label_delimitare2.config(height=1, width=100)
 
         self.button_start_all = tk.Button(self, text='Click Here To Start All Cameras',
-                                          command=lambda: start_all_cameras(self.label_text3,self.label_text4)
+                                          command=lambda: start_all_cameras(self.label_text3, self.label_text4)
                                           )
         self.button_start_all.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_start_all.pack()
@@ -192,7 +165,6 @@ class Page2(Page):
         self.label_text4 = tk.Label(self, text='')
         self.label_text4.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text4.pack()
-
 
         self.label_text = tk.Label(self, text='Introduceti linkul camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
@@ -220,8 +192,6 @@ class Page2(Page):
                                                              self.text_box2)
                                     )
 
-        # threading_detections(self.text_box.get("1.0", "end-1c"),
-        #                      self.error_message, self.hint_message)
         self.button_add.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_add.pack()
 
@@ -243,7 +213,6 @@ class Page2(Page):
             gasit_nume = 0
             gasit_link = 0
             # print(lbl_name)
-            # f = open('free_spaces_cameras/parking_cameras.txt', 'r')
             for link in links:
                 print(link[0])
                 if link[0] == lbl_name:
@@ -294,6 +263,10 @@ class Page2(Page):
                 self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
                 self.text_label2.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract2(links))))
 
+                self.mycanvas.update_idletasks()
+                self.mycanvas.configure(scrollregion=self.mycanvas.bbox("all"))
+                self.mycanvas.yview_moveto(1)
+
         def remove_link(lbl1, lbl2, lbl_clear_text):
             gasit_nume = 1
             for link in links:
@@ -318,7 +291,8 @@ class Page2(Page):
                         links.remove(link)
                         print('lungime este egala cu ' + str(len(links)))
                         if len(links) == 0:
-                            self.text_label.config(font=("Helvetica", 12), text='Lista este goala. Va rugam introduceti un loc de parcare!')
+                            self.text_label.config(font=("Helvetica", 12),
+                                                   text='Lista este goala. Va rugam introduceti un loc de parcare!')
                             self.text_label2.config(font=("Helvetica", 12), text='')
                         else:
                             self.text_label.config(font=("Helvetica", 12), text='\n'.join(map(str, Extract1(links))))
@@ -342,6 +316,8 @@ class Page2(Page):
                                     f.write(line)
                                     f.truncate()
                 lbl_clear_text.delete("1.0", "end-1c")
+                self.mycanvas.update_idletasks()
+                self.mycanvas.configure(scrollregion=self.mycanvas.bbox("all"))
 
         self.button_remove = tk.Button(self, text='Click Here To Remove',
                                        command=lambda: remove_link(self.text_box.get("1.0", "end-1c"),
@@ -351,24 +327,14 @@ class Page2(Page):
         self.button_remove.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_remove.pack()
 
-
-
         self.label_text2 = tk.Label(self, text='')
         self.label_text2.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text2.pack()
 
-        # self.error_message = tk.Label(self, text='dsadasda')
-        # self.error_message.config(font=("Helvetica", 12), padx='10')
-        # self.error_message.pack()
-
-        # self.hint_message = tk.Label(self, text='')
-        # self.hint_message.config(font=("Helvetica", 12), padx='10')
-        # self.hint_message.pack()
-
-
         self.label_delimitare2 = tk.Label(self)
         self.label_delimitare2.pack()
-        self.label_delimitare2.config(height=1, width=100, text='Lista locurilor de parcare:', font=("Helvetica", 18),anchor='w',padx=100)
+        self.label_delimitare2.config(height=1, width=100, text='Lista locurilor de parcare:', font=("Helvetica", 18),
+                                      anchor='w', padx=10)
 
         f = open('parking_data/parking_cameras.txt', 'r')
         lines = f.readlines()
@@ -387,10 +353,30 @@ class Page2(Page):
         def Extract2(lst):
             return list(list(zip(*lst))[1])
 
-        self.text_labeld = tk.Label(self)
-        self.text_labeld.config(padx='50', anchor='n', justify='left', font=("Helvetica", 12), )
-        self.text_labeld.pack(side='left', fill='y')
-        self.text_label = tk.Label(self)
+        self.wrapper1 = tk.LabelFrame(self)
+        self.wrapper1.pack(fill='both', expand='yes', padx=10, pady=10)
+
+        self.mycanvas = tk.Canvas(self.wrapper1)
+        self.mycanvas.pack(side='left', fill='both', expand='yes')
+
+        self.yscrollbar = ttk.Scrollbar(self.wrapper1, orient='vertical', command=self.mycanvas.yview)
+        self.yscrollbar.pack(side='right', fill='y')
+
+        self.mycanvas.configure(yscrollcommand=self.yscrollbar.set)
+
+        self.mycanvas.bind('<Configure>', lambda e: self.mycanvas.configure(scrollregion=self.mycanvas.bbox('all')))
+
+        self.myframe = tk.Frame(self.mycanvas)
+        self.mycanvas.create_window((0, 0), window=self.myframe, anchor='nw')
+
+        # # tk.Button(self.myframe, text="My Button 1 ").pack()
+        # self.text_label5 = tk.Label(self.myframe)
+        # self.text_label5.config(anchor='n', text='ceau', justify='left', font=("Helvetica", 12))
+        # self.text_label5.pack(side='left',anchor='nw')
+        # self.text_label6 = tk.Label(self.myframe)
+        # self.text_label6.config(text='ceau', justify='left', font=("Helvetica", 12))
+        # self.text_label6.pack(side='left',anchor='nw')
+        self.text_label = tk.Label(self.myframe)
         if links == []:
 
             self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
@@ -401,12 +387,7 @@ class Page2(Page):
 
         self.text_label.pack(side='left', fill='y')
 
-        self.scrollbar = tk.Scrollbar(self, orient="vertical")
-
-        # Pack the scroll bar
-        # Place it to the right side, using tk.RIGHT
-
-        self.text_label2 = tk.Label(self)
+        self.text_label2 = tk.Label(self.myframe)
         if links == []:
 
             self.text_label2.config(padx=20, anchor='n', justify='left', font=("Helvetica", 12),
@@ -414,10 +395,10 @@ class Page2(Page):
         else:
             self.text_label2.config(padx=20, anchor='n', justify='left', font=("Helvetica", 12),
                                     text='\n'.join(map(str, Extract2(links))))
+
         self.text_label2.pack(side='left', fill='y')
 
-        # self.canvas = tk.Canvas(self,width=300, height=300, bg='white')
-        # self.canvas.pack(expand='yes', fill='both')
+        # self.text_label
 
 
 class Page3(Page):
@@ -425,6 +406,24 @@ class Page3(Page):
         Page.__init__(self, *args, **kwargs)
         label = tk.Label(self, text="This is page 3")
         label.pack(side="top", fill="both", expand=True)
+        self.wrapper1 = tk.LabelFrame(self)
+        self.wrapper1.pack(fill='both', expand='yes', padx=10, pady=10)
+
+        self.mycanvas = tk.Canvas(self.wrapper1)
+        self.mycanvas.pack(side='left', fill='both', expand='yes')
+
+        self.yscrollbar = ttk.Scrollbar(self.wrapper1, orient='vertical', command=self.mycanvas.yview)
+        self.yscrollbar.pack(side='right', fill='y')
+
+        self.mycanvas.configure(yscrollcommand=self.yscrollbar.set)
+
+        self.mycanvas.bind('<Configure>', lambda e: self.mycanvas.configure(scrollregion=self.mycanvas.bbox('all')))
+
+        self.myframe = tk.Frame(self.mycanvas)
+        self.mycanvas.create_window((0, 0), window=self.myframe, anchor='nw')
+
+        for i in range(50):
+            tk.Button(self.myframe, text="My Button - " + str(i)).pack()
 
 
 class MainView(tk.Frame):
@@ -459,6 +458,7 @@ if __name__ == "__main__":
 
     root.iconbitmap('smart_parking_short.ico')
     root.title('Smart Parking')
+    root.resizable(False, False)
 
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)

@@ -1,1 +1,4 @@
-Camera 2 = https://www.youtube.com/watch?v=U7HRKjlXK-Y&ab_channel=Supercircuits
+Strada Beius = https://www.youtube.com/watch?v=U7HRKjlXK-Y&ab_channel=Supercircuits
+Strada Voinicilor = https://www.youtube.com/watch?v=GJaMZiBKbmE&ab_channel=intuVisionVideos
+Strada Buna = https://www.youtube.com/watch?v=NW-rXqCl7us&ab_channel=omriShafran
+Strada Live Camera = https://www.youtube.com/watch?v=5rmRIuA52Mg&ab_channel=Hooper%27sCameras

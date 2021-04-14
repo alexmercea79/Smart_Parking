@@ -1,4 +1,3 @@
-from datetime import time
 import re
 
 refPt = []
@@ -289,7 +288,12 @@ def detections_working(url):
 
         # colt stanga overlay
         if dict['text_overlay']:
-            str_on_frame = "%d/%d" % (video_cur_frame, video_info['num_of_frames'])
+            print('viddeo infoooooooooo:',video_info['num_of_frames'])
+            if video_info['num_of_frames'] > 0:
+
+                str_on_frame = "%d/%d" % (video_cur_frame, video_info['num_of_frames'])
+            else:
+                str_on_frame = "%d/%s" % (video_cur_frame, 'LIVE(N/A)')
             cv2.putText(frame_out, str_on_frame, (5, 30), cv2.FONT_HERSHEY_SIMPLEX,
                         0.8, (0, 255, 255), 2, cv2.LINE_AA)
             cv2.putText(frame_out, global_str + str(round(change_pos, 2)) + ' sec', (5, 60), cv2.FONT_HERSHEY_SIMPLEX,
