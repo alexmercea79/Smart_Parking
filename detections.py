@@ -288,7 +288,7 @@ def detections_working(url):
 
         # colt stanga overlay
         if dict['text_overlay']:
-            print('viddeo infoooooooooo:',video_info['num_of_frames'])
+            # print('viddeo infoooooooooo:',video_info['num_of_frames'])
             if video_info['num_of_frames'] > 0:
 
                 str_on_frame = "%d/%d" % (video_cur_frame, video_info['num_of_frames'])
