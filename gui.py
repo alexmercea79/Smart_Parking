@@ -404,7 +404,7 @@ class Page2(Page):
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="This is page 3")
+        label = tk.Label(self, text="Scurt tutorial")
         label.pack(side="top", fill="both", expand=True)
         self.wrapper1 = tk.LabelFrame(self)
         self.wrapper1.pack(fill='both', expand='yes', padx=10, pady=10)

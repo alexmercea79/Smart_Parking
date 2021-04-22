@@ -1,5 +1,6 @@
 import re
 
+
 refPt = []
 
 
@@ -98,13 +99,20 @@ l = []
 
 def threading_working(url):
     from multiprocessing import Process
+    # Process(target=detections_working, kwargs=dict(url=url))
+    # v = Process(target=detections_working, kwargs=dict(url=url))
+    # l.append(v)
+    # print('marimea listei= ' + str(len(l)))
+    processes = []
+    for x in range(len(processes) - 1, len(processes)):
+        #     l[x].start()
+        # print('marimea listei= ' + str(len(l)))
 
-    v = Process(target=detections_working, kwargs=dict(url=url))
-    l.append(v)
-    print('marimea listei= ' + str(len(l)))
-    for x in range(len(l) - 1, len(l)):
-        l[x].start()
-    print('marimea listei= ' + str(len(l)))
+        proc = Process(target=detections_working, kwargs=dict(url=url))
+        proc.start()
+        processes.append(proc)
+    for proc in processes:
+        proc.join()
 
 
 def detections_working(url):
@@ -133,7 +141,7 @@ def detections_working(url):
         'parking_overlay': True,
         'parking_id_overlay': True,
         'parking_detection': True,
-        'motion_detection': True,
+        'motion_detection': False,
         'pedestrian_detection': False,  # putere de procesare marita
         'min_area_motion_contour': 500,  # detectare miscare
         'park_laplacian_th': 2.8,
@@ -461,7 +469,7 @@ def detections_working(url):
             #         if video_cur_frame % 35 == 0: # take every 30 frames
             out.write(frame_out)
 
-        f = open("free_spaces_cameras/"+splitter[1]+".txt", "w")
+        f = open("free_spaces_cameras/" + splitter[1] + ".txt", "w")
         f.write(str(number))
         f.close()
         # video
