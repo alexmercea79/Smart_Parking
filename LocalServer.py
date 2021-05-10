@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import timeago
 
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
@@ -36,7 +37,11 @@ def sms_reply():
             time = os.path.getmtime(path)
             modTimesinceEpoc = os.path.getmtime(path)
             modificationTime = datetime.fromtimestamp(modTimesinceEpoc).strftime('%Y-%m-%d %H:%M:%S')
-            print("Last Modified Time : ", modificationTime)
+            now = datetime.now()
+
+            current_time = datetime.now()
+            print('current timeeeee=',current_time)
+            now_timeago=timeago.format(modificationTime,current_time,locale='ro').capitalize()
             # print('time este egal cu: '+str(time))
             file = open(path, 'r')
             file_open = file.read()
@@ -45,11 +50,20 @@ def sms_reply():
             print('resp= ' + str(resp).lower())
             print(str(file_open))
             if str(file_open) == '1':
-                resp.message("Este disponibil un singur loc de parcare! Grabeste-te!\n"+ 'Ultima actualizare: '+ str(modificationTime))
+                resp.message(
+                    "Este disponibil un singur loc de parcare! Grabeste-te!\nUltima actualizare: {0}.\n({1})".format(
+                        str(now_timeago), str(
+                            modificationTime)))
             elif str(file_open) == '0':
-                resp.message("Din pacate toate locurile de parcare sunt ocupate.\n"+ 'Ultima actualizare: '+ str(modificationTime))
+                resp.message(
+                    "Din pacate toate locurile de parcare sunt ocupate.\nUltima actualizare: {0}.\n({1})".format(
+                        str(now_timeago), str(
+                            modificationTime)))
             else:
-                resp.message("Sunt {} locuri libere de parcare.\n".format(str(file_open))+'Ultima actualizare: '+ str(modificationTime))
+                resp.message(
+                    '{0}Ultima actualizare: {1}.\n({2})'.format(
+                        "Sunt {} locuri libere de parcare.\n".format(str(file_open)), str(now_timeago), str(
+                            modificationTime)))
         elif 'Afisare Parcare' == str(body):
             verif = 1
             resp = MessagingResponse()
