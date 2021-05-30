@@ -1,6 +1,5 @@
 import re
 
-
 refPt = []
 
 
@@ -14,12 +13,36 @@ def draw(url):
     y = re.search('t=[1-9]+[a-z]*&', splitter[1])
     print(splitter[1])
     print('y= ' + str(y))
+
+    import pafy
+    video = pafy.new(url)
+    fn_yaml = splitter[1] + ".yml"
+    print(fn_yaml)
+    best = video.getbest(preftype="mp4")
+
+    # refPt = []
+
+    def capture_frame(videofile):
+        vidcap = cv2.VideoCapture(videofile)
+        success, image = vidcap.read()
+        if success:
+            cv2.imwrite("images/" + splitter[1] + ".jpg", image)
+
+    capture_frame(best.url)
+
     if y is not None:
         y = re.findall('t=[1-9]+[a-z]*&', splitter[1])
         splitter[1] = splitter[1].replace(str(y[0]), '')
     fn_yaml = splitter[1] + ".yml"
+    import os
+    if os.path.exists("ymls/" + fn_yaml):
+        pass
+    else:
+        file = open("ymls/" + fn_yaml, 'w')
+        file.close()
     print(fn_yaml)
     file_path = "ymls/" + fn_yaml
+
     img = cv2.imread('images/' + splitter[1] + ".jpg")
 
     file = open(file_path, "r+")
@@ -117,8 +140,7 @@ def threading_working(url):
 
 def detections_working(url):
     print('dasdasdasurllll= ' + url)
-    global car_cascade, splitter, fn_yaml, parking_status
-    # Mercea Alex-Ovidiu
+    global car_cascade, splitter, fn_yaml, parking_status, frame, fgbg, parking_buffer, ind, hog, out
     import os.path
     import cv2
     import numpy as np
@@ -196,7 +218,7 @@ def detections_working(url):
     if if_draw == 'n':
         pass
     else:
-        draw()
+        draw(url)
     # proprietatile videoclipului
     cap = cv2.VideoCapture(best.url)
     video_info = {'fps': cap.get(cv2.CAP_PROP_FPS),

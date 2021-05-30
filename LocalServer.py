@@ -34,14 +34,12 @@ def sms_reply():
             print(line[1])
 
             path = 'free_spaces_cameras/' + file_txt
-            time = os.path.getmtime(path)
-            modTimesinceEpoc = os.path.getmtime(path)
-            modificationTime = datetime.fromtimestamp(modTimesinceEpoc).strftime('%Y-%m-%d %H:%M:%S')
-            now = datetime.now()
+            mod_timesince_epoc = os.path.getmtime(path)
+            modification_time = datetime.fromtimestamp(mod_timesince_epoc).strftime('%Y-%m-%d %H:%M:%S')
 
             current_time = datetime.now()
-            print('current timeeeee=',current_time)
-            now_timeago=timeago.format(modificationTime,current_time,locale='ro').capitalize()
+            print('current timeeeee=', current_time)
+            now_timeago = timeago.format(modification_time, current_time, locale='ro').capitalize()
             # print('time este egal cu: '+str(time))
             file = open(path, 'r')
             file_open = file.read()
@@ -53,17 +51,17 @@ def sms_reply():
                 resp.message(
                     "Este disponibil un singur loc de parcare! Grabeste-te!\nUltima actualizare: {0}.\n({1})".format(
                         str(now_timeago), str(
-                            modificationTime)))
+                            modification_time)))
             elif str(file_open) == '0':
                 resp.message(
                     "Din pacate toate locurile de parcare sunt ocupate.\nUltima actualizare: {0}.\n({1})".format(
                         str(now_timeago), str(
-                            modificationTime)))
+                            modification_time)))
             else:
                 resp.message(
                     '{0}Ultima actualizare: {1}.\n({2})'.format(
                         "Sunt {} locuri libere de parcare.\n".format(str(file_open)), str(now_timeago), str(
-                            modificationTime)))
+                            modification_time)))
         elif 'Afisare Parcare' == str(body):
             verif = 1
             resp = MessagingResponse()

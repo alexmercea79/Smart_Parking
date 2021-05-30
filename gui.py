@@ -22,13 +22,13 @@ def threading_local_server(lbl, lbl2):
 
 def start_local_server():
     import LocalServer
-    # webbrowser.open('http://127.0.0.1:5000/sms', new=2)
+    webbrowser.open('http://127.0.0.1:5000/sms', new=2)
 
     LocalServer.run_app()
 
 
 def start_all_cameras(lbl1, lbl2):
-    if links == []:
+    if not links:
         lbl1.config(text='Lista camerelor este goala', bg='red')
         lbl2.config(text='Sfat: Va rugam introduceti o camera!')
     else:
@@ -57,10 +57,9 @@ def threading_detections(text, lbl, lbl2):
         t2 = Thread(target=retrieve_input, kwargs=dict(text=text))
         t2.start()
 
-
     else:
         lbl.config(text='Linkul introdus este incorect!', bg='red')
-        lbl2.config(text='Sugestie: Adaugati URL-ul complet al videoclipului!')
+        lbl2.config(text='Sugestie: Adăugați URL-ul complet al videoclipului!')
 
 
 def retrieve_input(text):
@@ -70,10 +69,17 @@ def retrieve_input(text):
     detections.threading_working(text)
 
 
-def drawing(text):
+def drawing(text, lbl, lbl2):
     import detections
+    x = text.split("https://www.youtube.com/watch?v=")
+    if x[0] is '' and len(x) is 2:
+        lbl.config(text='Linkul introdus este corect!', bg='green')
+        lbl2.config(text='')
+        detections.draw(text)
 
-    detections.draw(text)
+    else:
+        lbl.config(text='Linkul introdus este incorect!', bg='red')
+        lbl2.config(text='Sugestie: Adaugati URL-ul complet al videoclipului!')
 
 
 links = []
@@ -82,9 +88,10 @@ links = []
 class Page1(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        self.photo_bg = tk.PhotoImage(file="smart_parking_long.PNG")
+        self.photo_bg = tk.PhotoImage(file="smart_parking_long_e.PNG")
         self.background_photo = tk.Label(self, image=self.photo_bg)
-        self.background_photo.place(x=70, y=450)
+        self.background_photo.place(x=200, y=480)
+
 
         self.label_delimitare1 = tk.Label(self)
         self.label_delimitare1.pack()
@@ -94,7 +101,7 @@ class Page1(Page):
         self.label_server_status.pack(anchor='w')
         self.label_server_status.config(font=("Helvetica", 12), padx='10', justify='left')
 
-        self.label2 = tk.Label(self, text='Porniti serverul pentru a putea primi mesaje pe telefonul mobil')
+        self.label2 = tk.Label(self, text='Porniți serverul pentru a putea primi mesaje pe telefonul mobil')
         self.label2.pack(anchor='w')
         self.label2.config(font=("Helvetica", 12))
 
@@ -102,13 +109,13 @@ class Page1(Page):
         self.label_delimitare2.pack()
         self.label_delimitare2.config(height=2, width=100)
 
-        self.button_start_server = tk.Button(self, text='Start Server',
+        self.button_start_server = tk.Button(self, text='Pornire Server',
                                              command=lambda: threading_local_server(self.label_server_status,
                                                                                     self.button_start_server))
         self.button_start_server.pack()
         self.button_start_server.config(bg='red', font=("Helvetica", 12), height=1, width=30, )
 
-        self.label_text = tk.Label(self, text='Introduceti linkul camerei de supravegheat:')
+        self.label_text = tk.Label(self, text='Introduceți linkul camerei de supravegheat:')
         self.label_text.pack()
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
 
@@ -116,12 +123,22 @@ class Page1(Page):
         self.text_box.pack()
         self.text_box.config(font=("Helvetica", 12))
 
-        self.button_start = tk.Button(self, text='Click Here To Start',
+        self.label_delimitare3 = tk.Label(self)
+        self.label_delimitare3.pack()
+        self.label_delimitare3.config(height=1, width=100)
+
+        self.button_start = tk.Button(self, text='Pornește camera',
                                       command=lambda: threading_detections(self.text_box.get("1.0", "end-1c"),
                                                                            self.error_message, self.hint_message)
                                       )
         self.button_start.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
         self.button_start.pack()
+
+        self.button_rerun_schema = tk.Button(self, text='Schemă de Parcare Nouă',
+                                             command=lambda: drawing(self.text_box.get("1.0", "end-1c"),
+                                                                     self.error_message, self.hint_message), bg='gray')
+        self.button_rerun_schema.pack()
+        self.button_rerun_schema.config(font=("Helvetica", 12), height=1, width=30)
 
         self.error_message = tk.Label(self, text='')
         self.error_message.pack()
@@ -131,12 +148,7 @@ class Page1(Page):
         self.hint_message.pack()
         self.hint_message.config(font=("Helvetica", 12), padx='10')
 
-        self.button_rerun_schema = tk.Button(self, text='Schema de parcare noua',
-                                             command=lambda: drawing(self.text_box.get("1.0", "end-1c")), bg='gray')
-        self.button_rerun_schema.pack()
-        self.button_rerun_schema.config(font=("Helvetica", 12), height=1, width=30)
-
-        self.button_iesire_program = tk.Button(self, text='Iesire Program', command=root.destroy)
+        self.button_iesire_program = tk.Button(self, text='Ieșire Program', command=root.destroy)
         self.button_iesire_program.config(height=1, width=30, font=("Helvetica", 12))
         self.button_iesire_program.pack()
 
@@ -152,7 +164,7 @@ class Page2(Page):
         self.label_delimitare2.pack()
         self.label_delimitare2.config(height=1, width=100)
 
-        self.button_start_all = tk.Button(self, text='Click Here To Start All Cameras',
+        self.button_start_all = tk.Button(self, text='Pornește Toate Camerele',
                                           command=lambda: start_all_cameras(self.label_text3, self.label_text4)
                                           )
         self.button_start_all.config(height=1, width=30, bg='grey', font=("Helvetica", 12))
@@ -166,7 +178,7 @@ class Page2(Page):
         self.label_text4.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text4.pack()
 
-        self.label_text = tk.Label(self, text='Introduceti linkul camerei de supravegheat')
+        self.label_text = tk.Label(self, text='Introduceți linkul camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text.pack()
 
@@ -178,7 +190,7 @@ class Page2(Page):
         self.label_delimitare2.pack()
         self.label_delimitare2.config(height=1, width=100)
 
-        self.label_text = tk.Label(self, text='Introduceti numele camerei de supravegheat')
+        self.label_text = tk.Label(self, text='Introduceți numele camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text.pack()
 
@@ -186,7 +198,7 @@ class Page2(Page):
         self.text_box2.config(font=("Helvetica", 12))
         self.text_box2.pack()
 
-        self.button_add = tk.Button(self, text='Click Here To Add',
+        self.button_add = tk.Button(self, text='Adaugă Camera',
                                     command=lambda: add_link(self.text_box1.get("1.0", "end-1c"), self.label_text1,
                                                              self.text_box2.get("1.0", "end-1c"), self.text_box1,
                                                              self.text_box2)
@@ -199,7 +211,7 @@ class Page2(Page):
         self.label_text1.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text1.pack()
 
-        self.label_text = tk.Label(self, text='Stergeti numele camerei de supravegheat')
+        self.label_text = tk.Label(self, text='Ștergeti numele camerei de supravegheat')
         self.label_text.config(font=("Helvetica", 12), padx='10', justify='left')
         self.label_text.pack()
 
@@ -319,7 +331,7 @@ class Page2(Page):
                 self.mycanvas.update_idletasks()
                 self.mycanvas.configure(scrollregion=self.mycanvas.bbox("all"))
 
-        self.button_remove = tk.Button(self, text='Click Here To Remove',
+        self.button_remove = tk.Button(self, text='Șterge Camera',
                                        command=lambda: remove_link(self.text_box.get("1.0", "end-1c"),
                                                                    self.label_text2,
                                                                    self.text_box)
@@ -388,7 +400,7 @@ class Page2(Page):
         self.text_label.pack(side='left', fill='y')
 
         self.text_label2 = tk.Label(self.myframe)
-        if links == []:
+        if not links:
 
             self.text_label2.config(padx=20, anchor='n', justify='left', font=("Helvetica", 12),
                                     text='')
@@ -443,8 +455,8 @@ class MainView(tk.Frame):
         p3.place(in_=container, x=0, y=0, relwidth=1, relheight=1)
 
         b1 = tk.Button(buttonframe, text="Program", command=p1.lift)
-        b2 = tk.Button(buttonframe, text="Multi-Parking", command=p2.lift)
-        b3 = tk.Button(buttonframe, text="Page 3", command=p3.lift)
+        b2 = tk.Button(buttonframe, text="Parcare Multiplă", command=p2.lift)
+        b3 = tk.Button(buttonframe, text="Tutorial", command=p3.lift)
 
         b1.pack(side="left")
         b2.pack(side="left")
@@ -460,8 +472,10 @@ if __name__ == "__main__":
     root.title('Smart Parking')
     root.resizable(False, False)
 
+
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
     root.wm_geometry("1100x900")
+
 
     root.mainloop()
