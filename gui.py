@@ -92,7 +92,6 @@ class Page1(Page):
         self.background_photo = tk.Label(self, image=self.photo_bg)
         self.background_photo.place(x=200, y=480)
 
-
         self.label_delimitare1 = tk.Label(self)
         self.label_delimitare1.pack()
         self.label_delimitare1.config()
@@ -127,7 +126,7 @@ class Page1(Page):
         self.label_delimitare3.pack()
         self.label_delimitare3.config(height=1, width=100)
 
-        self.button_start = tk.Button(self, text='Pornește camera',
+        self.button_start = tk.Button(self, text='Pornește Camera',
                                       command=lambda: threading_detections(self.text_box.get("1.0", "end-1c"),
                                                                            self.error_message, self.hint_message)
                                       )
@@ -392,7 +391,7 @@ class Page2(Page):
         if links == []:
 
             self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
-                                   text='Lista este goala. Va rugam introduceti un loc de parcare!')
+                                   text='Lista este goală. Vă rugăm introduceți un loc de parcare!')
         else:
             self.text_label.config(anchor='n', justify='left', font=("Helvetica", 12),
                                    text='\n'.join(map(str, Extract1(links))))
@@ -416,8 +415,19 @@ class Page2(Page):
 class Page3(Page):
     def __init__(self, *args, **kwargs):
         Page.__init__(self, *args, **kwargs)
-        label = tk.Label(self, text="Scurt tutorial")
-        label.pack(side="top", fill="both", expand=True)
+
+        label = tk.Label(self, text="", )
+        label.config(font=("Courier", 10))
+        label.pack(side="top", anchor='w')
+
+        label = tk.Label(self, text="Manual de Utilizare")
+        label.config(font=("Courier", 30, 'underline'))
+        label.pack(side="top", anchor='w')
+
+        label = tk.Label(self, text="", )
+        label.config(font=("Courier", 14))
+        label.pack(side="top", anchor='w')
+
         self.wrapper1 = tk.LabelFrame(self)
         self.wrapper1.pack(fill='both', expand='yes', padx=10, pady=10)
 
@@ -434,8 +444,84 @@ class Page3(Page):
         self.myframe = tk.Frame(self.mycanvas)
         self.mycanvas.create_window((0, 0), window=self.myframe, anchor='nw')
 
-        for i in range(50):
-            tk.Button(self.myframe, text="My Button - " + str(i)).pack()
+        label = tk.Label(self.myframe, text="1.Pornire Cameră", )
+        label.config(font=("Courier", 30))
+        label.pack(side="top", anchor='w')
+        label2 = tk.Label(self.myframe, text="Pentru pornirea unei camere, se accesează meniul principal(Program)\nși "
+                                             "se introduce linkul(URL-ul complet) de la parcarea dorită.\nSe "
+                                             "accesează butonul Pornește Camera pentru "
+                                             "procesarea linkului.", justify='left')
+        label2.config(font=("Courier", 14))
+        label2.pack(side="top", anchor='w')
+        label = tk.Label(self.myframe, text="2.Schemă de Parcare Nouă", )
+        label.config(font=("Courier", 30))
+        label.pack(side="top", anchor='w')
+        label2 = tk.Label(self.myframe,
+                          text="Pentru a realiza o schemă de parcare nouă, se accesează\nmeniul principal(Program) și "
+                               "se introduce linkul(URL-ul complet)\nde la parcarea dorită.\nSe accesează butonul "
+                               "Schemă de Parcare Nouă pentru\na înregistra manual locurile de parcare.",
+                          justify='left')
+        label2.config(font=("Courier", 14))
+        label2.pack(side="top", anchor='w')
+
+        label = tk.Label(self.myframe, text="3.Marcare loc de parcare", )
+        label.config(font=("Courier", 30))
+        label.pack(side="top", anchor='w')
+        label2 = tk.Label(self.myframe,
+                          text="Pentru marcarea locurilor de parcare, se apasă dublu-click\npe fiecare colț al "
+                               "locului de parcare pentru a-l marca corespunzător.\nLa terminarea marcării unui loc "
+                               "de parcare, acesta devine vizibil\nși este posibilă marcarea unui loc de parcare nou.",
+                          justify='left')
+        label2.config(font=("Courier", 14))
+        label2.pack(side="top", anchor='w')
+
+        label = tk.Label(self.myframe, text="4.Pornire Camere", )
+        label.config(font=("Courier", 30))
+        label.pack(side="top", anchor='w')
+        label2 = tk.Label(self.myframe, text="Pentru pornirea tuturor camerelor, se accesează meniul Parcare "
+                                             "Multiplă\nși se "
+                                             "accesează butonul Pornește Toate Camerele.\n"
+                                             "Programul afișează toate camerele disponibile din\nLista Locurilor de "
+                                             "Parcare",
+                          justify='left')
+        label2.config(font=("Courier", 14))
+        label2.pack(side="top", anchor='w')
+
+        label = tk.Label(self.myframe, text="5.Adaugă Cameră", )
+        label.config(font=("Courier", 30))
+        label.pack(side="top", anchor='w')
+        label2 = tk.Label(self.myframe,
+                          text="Pentru a adăuga o cameră de parcare nouă, se accesează\nmeniul Parcare Multiplă "
+                               "și se introduce linkul(URL-ul complet)\nși numele parcării dorite.\nSe acceasează"
+                               " butonul Adaugă Camera pentru înregistrarea linkului\nși a numelui. "
+                          ,
+                          justify='left')
+        label2.config(font=("Courier", 14))
+        label2.pack(side="top", anchor='w')
+
+        label = tk.Label(self.myframe, text="6.Șterge Camera", )
+        label.config(font=("Courier", 30))
+        label.pack(side="top", anchor='w')
+        label2 = tk.Label(self.myframe,
+                          text="Pentru a șterge o cameră de parcare, se accesează\nmeniul Parcare Multiplă "
+                               "și se introduce numele parcării dorite.\nSe acceasează"
+                               " butonul Șterge Camera pentru ștergerea linkului\nși a numelui parcării. "
+                          ,
+                          justify='left')
+        label2.config(font=("Courier", 14))
+        label2.pack(side="top", anchor='w')
+
+        label = tk.Label(self.myframe, text="7.Pornire Server", )
+        label.config(font=("Courier", 30))
+        label.pack(side="top", anchor='w')
+        label2 = tk.Label(self.myframe,
+                          text="Pentru a porni Serverul, se accesează meniul principal(Program)\n"
+                               "și se apasă butonul Pornire Server.\nLa accesarea butonului, utilizatorii au "
+                               "posibilitatea de a primi mesaje\nprin intermediul aplicației de mesagerie. "
+                          ,
+                          justify='left')
+        label2.config(font=("Courier", 14))
+        label2.pack(side="top", anchor='w')
 
 
 class MainView(tk.Frame):
@@ -456,7 +542,7 @@ class MainView(tk.Frame):
 
         b1 = tk.Button(buttonframe, text="Program", command=p1.lift)
         b2 = tk.Button(buttonframe, text="Parcare Multiplă", command=p2.lift)
-        b3 = tk.Button(buttonframe, text="Tutorial", command=p3.lift)
+        b3 = tk.Button(buttonframe, text="Manual de Utilizare", command=p3.lift)
 
         b1.pack(side="left")
         b2.pack(side="left")
@@ -472,10 +558,8 @@ if __name__ == "__main__":
     root.title('Smart Parking')
     root.resizable(False, False)
 
-
     main = MainView(root)
     main.pack(side="top", fill="both", expand=True)
     root.wm_geometry("1100x900")
-
 
     root.mainloop()
