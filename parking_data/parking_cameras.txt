@@ -1,5 +1,6 @@
 Strada Beius = https://www.youtube.com/watch?v=U7HRKjlXK-Y&ab_channel=Supercircuits
 Strada Buna = https://www.youtube.com/watch?v=NW-rXqCl7us&ab_channel=omriShafran
 Strada Live Camera = https://www.youtube.com/watch?v=5rmRIuA52Mg&ab_channel=Hooper%27sCameras
-Live Camera = https://www.youtube.com/watch?v=UY7KFWisbeQ&ab_channel=Hamptons.com
-Strada Live Working = https://www.youtube.com/watch?v=hcZV7KYkQ_Q&ab_channel=Hamptons.com
+Inchisa = https://www.youtube.com/watch?v=UY7KFWisbeQ&ab_channel=Hamptons.com
+Bulevardul Testare = https://www.youtube.com/watch?v=nh2UHpJHBI4&ab_channel=Hamptons.com
+Bulevard = https://www.youtube.com/watch?v=qzF78N9M0mU&ab_channel=Hamptons.com

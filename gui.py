@@ -21,10 +21,10 @@ def threading_local_server(lbl, lbl2):
 
 
 def start_local_server():
-    import LocalServer
+    import server
     webbrowser.open('http://127.0.0.1:5000/sms', new=2)
 
-    LocalServer.run_app()
+    server.run_app()
 
 
 def start_all_cameras(lbl1, lbl2):
@@ -63,7 +63,7 @@ def threading_detections(text, lbl, lbl2):
 
 
 def retrieve_input(text):
-    print('text= ' + text)
+    print('Text Input= ' + text)
     import detections
 
     detections.threading_working(text)
@@ -249,7 +249,7 @@ class Page2(Page):
                 import re
                 y = re.search('t=[1-9]+[a-z]*&', lbl_link)
                 print(lbl_link)
-                print('y= ' + str(y))
+                print('Reformat y= ' + str(y))
                 if y is not None:
                     y = re.findall('t=[1-9]+[a-z]*&', lbl_link)
                     lbl_link = lbl_link.replace(str(y[0]), '')
@@ -287,7 +287,7 @@ class Page2(Page):
                 # print(gasit_nume)
 
             if lbl1 == '':
-                print('please add valid text')
+                print('introdu text valid')
                 lbl2.configure(text='Textul introdus este invalid', bg='red')
             elif gasit_nume == 1:
                 print('Acest nume nu este gasit')

@@ -1,11 +1,13 @@
 import re
 
-refPt = []
+points_data = []
 
 
 def draw(url):
     import cv2
     import yaml
+    import pafy
+
     cropping = False
     data = []
     print(url)
@@ -14,13 +16,10 @@ def draw(url):
     print(splitter[1])
     print('y= ' + str(y))
 
-    import pafy
     video = pafy.new(url)
     fn_yaml = splitter[1] + ".yml"
     print(fn_yaml)
     best = video.getbest(preftype="mp4")
-
-    # refPt = []
 
     def capture_frame(videofile):
         vidcap = cv2.VideoCapture(videofile)
@@ -64,12 +63,12 @@ def draw(url):
             yaml.dump(data, file_descr)
 
     def click_and_crop(event, x, y, flags, param):
-        current_pt = {'id': 0, 'points': []}
-        global refPt, cropping
+        current_point = {'id': 0, 'points': []}
+        global points_data, cropping
         if event == cv2.EVENT_LBUTTONDBLCLK:
-            refPt.append((x, y))
+            points_data.append((x, y))
             cropping = False
-        if len(refPt) == 4:
+        if len(points_data) == 4:
             if not data:
                 if yaml_loader(file_path) is not None:
                     data_already = len(yaml_loader(file_path))
@@ -81,21 +80,21 @@ def draw(url):
                 else:
                     data_already = len(data)
 
-            cv2.line(image, refPt[0], refPt[1], (0, 255, 0), 1)
-            cv2.line(image, refPt[1], refPt[2], (0, 255, 0), 1)
-            cv2.line(image, refPt[2], refPt[3], (0, 255, 0), 1)
-            cv2.line(image, refPt[3], refPt[0], (0, 255, 0), 1)
+            cv2.line(image, points_data[0], points_data[1], (0, 255, 0), 1)
+            cv2.line(image, points_data[1], points_data[2], (0, 255, 0), 1)
+            cv2.line(image, points_data[2], points_data[3], (0, 255, 0), 1)
+            cv2.line(image, points_data[3], points_data[0], (0, 255, 0), 1)
 
-            temp_lst1 = list(refPt[2])
-            temp_lst2 = list(refPt[3])
-            temp_lst3 = list(refPt[0])
-            temp_lst4 = list(refPt[1])
+            temp_lst1 = list(points_data[2])
+            temp_lst2 = list(points_data[3])
+            temp_lst3 = list(points_data[0])
+            temp_lst4 = list(points_data[1])
 
-            current_pt['points'] = [temp_lst1, temp_lst2, temp_lst3, temp_lst4]
-            current_pt['id'] = data_already
-            data.append(current_pt)
+            current_point['points'] = [temp_lst1, temp_lst2, temp_lst3, temp_lst4]
+            current_point['id'] = data_already
+            data.append(current_point)
             # data_already+=1
-            refPt = []
+            points_data = []
 
     image = cv2.resize(img, None, fx=0.6, fy=0.6)
     clone = image.copy()
@@ -105,7 +104,7 @@ def draw(url):
 
     # loop pana apasare tasta q
     while True:
-        # display the image and wait for a keypress
+        # astepare esc
         cv2.imshow("Dublu click pentru a marca punctul si ESC pentru a iesi", image)
         key = cv2.waitKey(1) & 0xFF
         if cv2.waitKey(33) == 27:
@@ -134,12 +133,13 @@ def threading_working(url):
         proc = Process(target=detections_working, kwargs=dict(url=url))
         proc.start()
         processes.append(proc)
+
     for proc in processes:
         proc.join()
 
 
 def detections_working(url):
-    print('dasdasdasurllll= ' + url)
+    print('URL Videoclip= ' + url)
     global car_cascade, splitter, fn_yaml, parking_status, frame, fgbg, parking_buffer, ind, hog, out
     import os.path
     import cv2
@@ -186,7 +186,7 @@ def detections_working(url):
     splitter = url.split("https://www.youtube.com/watch?v=")
     y = re.search('t=[1-9]+[a-z]*&', splitter[1])
     print(splitter[1])
-    print('y= ' + str(y))
+    print('Text Split y= ' + str(y))
     if y is not None:
         y = re.findall('t=[1-9]+[a-z]*&', splitter[1])
         splitter[1] = splitter[1].replace(str(y[0]), '')
@@ -318,7 +318,7 @@ def detections_working(url):
 
         # colt stanga overlay
         if dict['text_overlay']:
-            # print('viddeo infoooooooooo:',video_info['num_of_frames'])
+
             if video_info['num_of_frames'] > 0:
 
                 str_on_frame = "%d/%d" % (video_cur_frame, video_info['num_of_frames'])
