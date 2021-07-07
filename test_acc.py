@@ -34,13 +34,10 @@ def get_acc(cascade_src):
         print("%d autovehicule detectate." % saved)
         list_of_indexes.append(saved / total[counter - 2])
         index = 0
-        # input("press ")
         if k == 32:
             continue
-        # press escape key to exit
         if cv2.waitKey(33) == 27:
             break
-        # os.system("pause")
     suma = 0
     for i in list_of_indexes:
         suma = suma + i
